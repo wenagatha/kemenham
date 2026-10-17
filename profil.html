@@ -338,6 +338,9 @@
 
   renderInfo(); isiForm(); renderDaftar();
   show(location.hash.slice(1));
+  window.addEventListener('storage', event => {
+    if (event.key === 'kemenham-app-v1') location.reload();
+  });
 </script>
 </body>
 </html>

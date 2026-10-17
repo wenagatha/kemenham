@@ -125,12 +125,12 @@
 
 <main class="wrap">
   <div class="head">
-    <a class="back" href="profil.html">
+    <a class="back" href="home.html">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
-      Kembali ke profil
+      Kembali ke beranda
     </a>
     <h1 id="judul-halaman">Unggah Karya</h1>
-    <p>Unggah karya dan dokumen pendukungmu di sini. Halaman ini dibuka setelah panitia mengirim notifikasi bahwa pengumpulan karya sudah dimulai.</p>
+    <p>Unggah karya dan dokumen pendukungmu di sini. Kalau karyamu belum siap, kamu bisa kembali ke beranda dan mengunggahnya nanti.</p>
   </div>
 
   <div class="layout">
@@ -291,7 +291,7 @@
   $('#f-word').hidden = !c.word;
   $('[data-template]').href = TEMPLATE_URL;
   $('[data-pedoman]').href = PEDOMAN_URL;
-  document.querySelectorAll('a.back, .actions a[href="profil.html"]').forEach(a => a.href = PROFIL_URL);
+  document.querySelectorAll('.actions a[href="profil.html"]').forEach(a => a.href = PROFIL_URL);
 
   const MB = 1024 * 1024;
   const FILE = {
@@ -384,6 +384,17 @@
       KH.tampilkan(form, { judul: 'Karyamu sudah terkirim', teks: 'Judul karya: ' + (dft.karya ? dft.karya.judul : '-') + '.',
         tombol: [{ label: 'Lihat di profil', href: 'profil.html#upload', kuning: true }, { label: 'Kembali ke beranda', href: 'home.html' }] });
     }
+  } else if (window.KH) {
+    KH.tampilkan(form, {
+      judul: 'Masuk untuk mengunggah karya',
+      teks: 'Masuk dengan akun yang digunakan untuk mendaftar lomba terlebih dahulu.',
+      tombol: [{ label: 'Masuk atau daftar', href: 'auth-page.html?next=unggah-buku-cerita.html', kuning: true }, { label: 'Kembali ke beranda', href: 'home.html' }]
+    });
+  }
+  if (window.KH && KH.me() && new URLSearchParams(location.search).has('registered')) {
+    const st = $('#status');
+    st.textContent = 'Pendaftaran berhasil! Notifikasi sudah masuk. Kamu bisa mengunggah karya sekarang atau kembali ke beranda dan melanjutkannya nanti.';
+    st.classList.add('on');
   }
 </script>
 </body>

@@ -152,7 +152,7 @@
   <div class="actions">
     <a class="chip" href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6v4l-2 4h16l-2-4V8a6 6 0 0 0-6-6zm-2 18a2 2 0 0 0 4 0z"/></svg><span>Notifikasi</span></a>
     <a class="chip" href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4.5"/><path d="M3 21c0-5 4-7.500 9-7.500s9 2.500 9 7.500z"/></svg><span>Akun</span></a>
-    <a class="chip fill" href="auth-page.html#login"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200"><path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/></svg><span>Log-out</span></a>
+    <a class="chip fill" href="auth-page.html#login" data-auth-action><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200"><path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/></svg><span>Sign in</span></a>
   </div>
 </header>
 
@@ -320,16 +320,22 @@
   fit();
 
   /* ===== Tombol lomba mengikuti status pendaftaran ===== */
-  if (window.KH && KH.me()) {
+  function renderStatusLomba() {
+    if (!window.KH) return;
     const nama = { 'buku-cerita': 'Buku Cerita', 'komik': 'Komik' };
-    const pilih = Object.keys(KH.lomba).find(k => KH.daftar(k));
+    const user = KH.me();
+    const pilih = user && Object.keys(KH.lomba).find(k => KH.daftar(k));
     document.querySelectorAll('[data-lomba]').forEach(a => {
       const k = a.dataset.lomba, d = KH.daftar(k);
+      a.classList.remove('off');
+      a.removeAttribute('aria-disabled');
+      a.href = 'daftar-' + k + '.html';
+      a.textContent = 'Daftar Lomba ' + nama[k];
       if (d) {
         if (d.tahap === 'terbuka') { a.textContent = 'Unggah Karya ' + nama[k]; a.href = 'unggah-' + k + '.html'; }
         else if (d.tahap === 'terkirim') { a.textContent = 'Karya Terkirim'; a.href = 'profil.html#upload'; }
         else { a.textContent = 'Menunggu Pengumpulan Karya'; a.href = 'profil.html#upload'; }
-      } else if (KH.cfg.HANYA_SATU_LOMBA && pilih) {
+      } else if (user && KH.cfg.HANYA_SATU_LOMBA && pilih) {
         a.textContent = 'Kamu sudah memilih lomba lain';
         a.classList.add('off'); a.removeAttribute('href'); a.setAttribute('aria-disabled', 'true');
       }
@@ -338,7 +344,14 @@
     if (d) {
       pb.textContent = d.tahap === 'terbuka' ? 'Unggah karya' : 'Lihat status';
       pb.href = d.tahap === 'terbuka' ? 'unggah-' + pilih + '.html' : 'profil.html#upload';
+    } else {
+      pb.textContent = 'Pilih lomba';
+      pb.href = '#lomba';
     }
+  }
+  if (window.KH) {
+    renderStatusLomba();
+    window.addEventListener('kemenham:change', renderStatusLomba);
   }
 </script>
 </body>

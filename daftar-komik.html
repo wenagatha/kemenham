@@ -331,7 +331,6 @@
     tandai($('[data-f=nama]'), teks('nama') ? '' : true);
     tandai($('[data-f=nomor]'), teks('nomor') ? '' : true);
     tandai($('[data-f=asal]'), teks('asal') ? '' : true);
-    tandai($('[data-f=judul]'), teks('judul') ? '' : true);
     tandai($('[data-f=email]'), /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(teks('email')) ? '' : true);
     tandai($('[data-f=wa]'), /^(\+62|62|0)8[0-9]{7,12}$/.test(teks('wa').replace(/[\s-]/g, '')) ? '' : true);
     tandai($('[data-f=setuju]'), form.setuju.checked ? '' : true);
@@ -361,19 +360,25 @@
       st.classList.add('on');
       return;
     }
-    const d = KH.tambahDaftar({
-      kategori, peserta: form.nama.value.trim(), tim: form.tim.value === 'kelompok' ? 'Kelompok' : 'Individu',
-      anggota2: form.anggota2.value.trim(), anggota3: form.anggota3.value.trim(),
-      nomor: form.nomor.value.trim(), asal: form.asal.value.trim(), email: form.email.value.trim(), wa: form.wa.value.trim()
-    });
-    const buka = d.tahap === 'terbuka';
-    KH.tampilkan(form, {
-      judul: 'Pendaftaran berhasil',
-      teks: buka ? 'Notifikasi sudah dikirim ke akunmu. Kamu bisa langsung mengunggah karya, atau nanti saja kalau karyamu belum siap. Tombol lomba di beranda akan berubah menjadi Unggah Karya.'
-                 : 'Panitia akan mengirim notifikasi saat pengumpulan karya dibuka.',
-      tombol: (buka ? [{ label: 'Unggah karya sekarang', href: 'unggah-' + kategori + '.html', kuning: true }] : [])
-        .concat([{ label: 'Kembali ke beranda', href: 'home.html' }])
-    });
+    if (!KH.me()) {
+      KH.tampilkan(form, {
+        judul: 'Masuk untuk mendaftar',
+        teks: 'Buat akun atau masuk terlebih dahulu agar pendaftaran dan notifikasi tersimpan pada akunmu.',
+        tombol: [{ label: 'Masuk atau daftar', href: 'auth-page.html?next=daftar-komik.html', kuning: true }]
+      });
+      return;
+    }
+    try {
+      KH.tambahDaftar({
+        kategori, peserta: form.nama.value.trim(), tim: form.tim.value === 'kelompok' ? 'Kelompok' : 'Individu',
+        anggota2: form.anggota2.value.trim(), anggota3: form.anggota3.value.trim(),
+        nomor: form.nomor.value.trim(), asal: form.asal.value.trim(), email: form.email.value.trim(), wa: form.wa.value.trim()
+      });
+      location.href = 'unggah-' + kategori + '.html?registered=1';
+    } catch (error) {
+      st.textContent = error.message;
+      st.classList.add('on');
+    }
   });
 
   document.querySelectorAll('input').forEach(i => i.addEventListener('input', () => {
