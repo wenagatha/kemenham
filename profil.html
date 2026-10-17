@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Akun Saya | Kementerian Hak Asasi Manusia</title>
+<style>
+  :root {
+    --bg:#ffffff; --ink:#14213d; --muted:#5d6b8a; --blue:#1d4ed8; --blue-soft:#e8efff;
+    --paper:#f5f8ff; --yellow:#facc15; --yellow-deep:#eab308; --line:#c7d4f5; --red:#b91c1c; --cream:#fef9e1;
+  }
+  * { box-sizing:border-box; margin:0; }
+  body { font-family:"Plus Jakarta Sans","Segoe UI",system-ui,sans-serif; background:var(--bg); color:var(--ink); line-height:1.55; }
+  a { color:inherit; text-decoration:none; }
+  .wrap { width:min(1120px,100% - 40px); margin-inline:auto; }
+  :focus-visible { outline:3px solid var(--yellow-deep); outline-offset:2px; }
+  [hidden] { display:none !important; }
+
+  /* Header */
+  .nav { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:18px 0; }
+  .brand { display:flex; align-items:center; gap:10px; font-weight:700; font-size:15px; }
+  .brand-logo { width:34px; height:34px; object-fit:contain; flex:none; }
+  .actions { display:flex; gap:8px; }
+  .chip { position:relative; display:inline-flex; align-items:center; gap:6px; padding:8px 14px; font-size:13px; font-weight:600; border:1.5px solid var(--blue); border-radius:999px; background:#fff; color:var(--ink); cursor:pointer; font-family:inherit; }
+  .chip:hover, .chip.on { background:var(--yellow); }
+  .dot { position:absolute; top:5px; left:24px; width:8px; height:8px; border-radius:50%; background:#dc2626; border:1.5px solid #fff; }
+
+  /* Kepala halaman */
+  .head { margin-top:8px; padding:32px 40px; background:var(--yellow); border:2px solid var(--blue); border-radius:28px; box-shadow:8px 8px 0 var(--blue); }
+  .back { display:inline-flex; align-items:center; gap:6px; margin-bottom:16px; padding:7px 14px; font-size:13px; font-weight:700; background:#fff; border:1.5px solid var(--blue); border-radius:999px; }
+  .back:hover { background:var(--blue); color:#fff; }
+  h1 { font-size:clamp(30px,4.2vw,46px); line-height:1.08; letter-spacing:-.03em; }
+  .head p { margin-top:10px; max-width:560px; font-size:15px; }
+
+  /* Tata letak */
+  .layout { display:grid; grid-template-columns:240px 1fr; gap:36px; align-items:start; margin-top:48px; }
+  .box { background:#fff; border:2px solid var(--ink); border-radius:22px; padding:30px; }
+  .main { box-shadow:8px 8px 0 var(--yellow); min-height:420px; }
+  .tabs { display:flex; flex-direction:column; gap:8px; padding:12px; background:var(--paper); box-shadow:8px 8px 0 var(--blue); position:sticky; top:20px; }
+  .tab { text-align:left; padding:12px 14px; font:inherit; font-size:14px; font-weight:700; color:var(--ink); background:transparent; border:2px solid transparent; border-radius:12px; cursor:pointer; }
+  .tab:hover { background:var(--blue-soft); }
+  .tab.on { background:var(--yellow); border-color:var(--ink); box-shadow:0 3px 0 var(--ink); }
+  h2 { font-size:24px; letter-spacing:-.01em; }
+  .sub { margin:4px 0 24px; font-size:14px; color:var(--muted); }
+
+  /* Info profil */
+  .who { display:flex; align-items:center; gap:18px; margin-bottom:26px; }
+  .avatar { width:68px; height:68px; flex:none; display:grid; place-items:center; font-size:28px; font-weight:800; color:#fff; background:var(--blue); border:3px solid var(--ink); border-radius:50%; box-shadow:3px 3px 0 var(--yellow); }
+  .who b { display:block; font-size:22px; letter-spacing:-.01em; }
+  .who span { font-size:14px; color:var(--muted); word-break:break-all; }
+  .info { display:grid; grid-template-columns:1fr 1fr; gap:0 32px; }
+  .info div { padding:12px 0; border-bottom:1.5px solid var(--line); }
+  .info dt { font-size:12.5px; font-weight:600; color:var(--muted); }
+  .info dd { margin:2px 0 0; font-size:15px; font-weight:600; word-break:break-word; }
+  .info .full { grid-column:1 / -1; }
+
+  /* Form */
+  .field { margin-bottom:18px; }
+  .lbl { display:block; font-size:14px; font-weight:600; margin-bottom:6px; }
+  input[type=text], input[type=email], input[type=tel], input[type=date], textarea {
+    width:100%; min-height:48px; padding:0 14px; font:inherit; font-size:14px; color:var(--ink);
+    background:#fff; border:1.5px solid var(--blue); border-radius:8px; transition:border-color .15s, box-shadow .15s;
+  }
+  textarea { padding:12px 14px; min-height:92px; resize:vertical; }
+  input[readonly] { background:var(--paper); color:var(--muted); border-color:var(--line); cursor:not-allowed; }
+  input:focus, textarea:focus { outline:none; border-color:var(--yellow-deep); box-shadow:0 0 0 3px #facc1566; }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .radios { display:flex; gap:22px; font-size:14px; }
+  .radios label { display:flex; align-items:center; gap:8px; cursor:pointer; }
+  .radios input { width:18px; height:18px; accent-color:var(--blue); }
+  .hint { display:block; margin-top:6px; font-size:12.5px; color:var(--muted); }
+  .err { display:none; margin-top:6px; font-size:12.5px; font-weight:600; color:var(--red); }
+  .invalid input, .invalid textarea { border-color:var(--red); }
+  .invalid .err { display:block; }
+  .btn { display:inline-block; padding:13px 22px; font:inherit; font-weight:700; font-size:14px; color:var(--ink); background:var(--yellow); border:2px solid var(--ink); border-radius:10px; box-shadow:0 4px 0 var(--ink); cursor:pointer; transition:transform .1s, box-shadow .1s; }
+  .btn:hover { background:var(--yellow-deep); }
+  .btn:active { transform:translateY(3px); box-shadow:0 1px 0 var(--ink); }
+  .btn.blue { background:var(--blue); color:#fff; }
+  .btn.blue:hover { background:#1a43b8; }
+  .btn[disabled] { opacity:.45; cursor:not-allowed; box-shadow:0 4px 0 var(--ink); transform:none; }
+  .status { display:none; margin-top:18px; padding:12px 16px; font-size:14px; font-weight:600; border:2px solid var(--ink); border-radius:12px; background:var(--blue-soft); }
+  .status.on { display:block; }
+
+  /* Hasil upload */
+  .reg { display:grid; grid-template-columns:1fr auto; gap:6px 16px; padding:22px; border:2px solid var(--ink); border-radius:18px; background:var(--paper); }
+  .reg + .reg { margin-top:18px; }
+  .reg h3 { font-size:19px; letter-spacing:-.01em; }
+  .reg .meta { font-size:14px; color:var(--muted); }
+  .side { display:flex; flex-direction:column; align-items:flex-end; gap:10px; grid-row:1 / span 2; grid-column:2; }
+  .badge { padding:3px 12px; font-size:12.5px; font-weight:700; background:var(--cream); border:1.5px solid var(--yellow-deep); border-radius:999px; }
+  .del { padding:6px 16px; font:inherit; font-size:13px; font-weight:700; color:var(--red); background:#fff; border:1.5px solid var(--red); border-radius:8px; cursor:pointer; }
+  .del:hover { background:var(--red); color:#fff; }
+  .notice { grid-column:1; margin-top:12px; padding:14px 16px; font-size:14px; background:var(--cream); border-left:5px solid var(--yellow-deep); border-radius:8px; }
+  .notice .btn { margin-top:10px; padding:10px 18px; }
+  .empty { padding:28px; text-align:center; border:2px dashed var(--line); border-radius:18px; color:var(--muted); font-size:14px; }
+  .empty .btn { margin:14px 6px 0; }
+
+  /* Footer */
+  footer { margin-top:96px; background:var(--ink); color:#e8efff; font-size:14px; }
+  .f-grid { display:grid; grid-template-columns:1.7fr 1fr 1fr 1fr; gap:32px; align-items:start; padding:56px 0 40px; text-align:center; }
+  .f-brand .brand { justify-content:center; color:#fff; font-size:17px; }
+  .f-brand small { display:block; margin-top:4px; font-size:12px; font-weight:600; color:var(--yellow); }
+  .f-brand p { margin-top:14px; color:#c9d4ee; }
+  .f-brand p + p { margin-top:10px; }
+  .f-col h4 { display:inline-block; margin-bottom:14px; padding-bottom:8px; font-size:15px; color:#fff; border-bottom:3px solid var(--yellow); }
+  .f-col a { display:block; padding:6px 0; color:#dbe4fb; }
+  .f-col a:hover, .f-brand a:hover { color:var(--yellow); }
+  .f-bottom { padding:18px 0 26px; text-align:center; font-size:13px; color:#b9c5e3; border-top:1px solid #ffffff26; }
+
+  @media (max-width:900px) {
+    .layout { grid-template-columns:1fr; gap:28px; margin-top:36px; }
+    .tabs { position:static; flex-direction:row; overflow-x:auto; }
+    .tab { white-space:nowrap; }
+    .head { padding:24px; }
+    .f-grid { grid-template-columns:1fr 1fr; } .f-brand { grid-column:1 / -1; }
+  }
+  @media (max-width:560px) {
+    .chip span { display:none; }
+    .brand { font-size:13px; }
+    .box { padding:22px 18px; }
+    .info, .row { grid-template-columns:1fr; }
+    .reg { grid-template-columns:1fr; }
+    .side { grid-row:auto; grid-column:1; flex-direction:row; align-items:center; justify-content:space-between; }
+  }
+  @media (max-width:480px) { .f-grid { grid-template-columns:1fr; } }
+  @media (prefers-reduced-motion:reduce) { * { transition:none !important; } }
+</style>
+<script src="kemenham.js"></script>
+</head>
+<body>
+
+<header class="wrap nav">
+  <div class="brand">
+    <img class="brand-logo" src="logo-kemenham.png" alt="Logo Kementerian Hak Asasi Manusia">
+    <span>Kementerian Hak Asasi Manusia</span>
+  </div>
+  <div class="actions">
+    <a class="chip" href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a6 6 0 0 0-6 6v4l-2 4h16l-2-4V8a6 6 0 0 0-6-6zm-2 18a2 2 0 0 0 4 0z"/></svg><span>Notifikasi</span><i class="dot" aria-label="Ada notifikasi baru"></i></a>
+    <a class="chip on" href="#info" aria-current="page"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8" r="4.5"/><path d="M3 21c0-5 4-7.500 9-7.500s9 2.500 9 7.500z"/></svg><span>Akun</span></a>
+    <button class="chip" type="button" id="logout"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" aria-hidden="true"><path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/></svg><span>Log-out</span></button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="head">
+    <a class="back" href="#" data-home>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      Kembali ke beranda
+    </a>
+    <h1>Akun Saya</h1>
+    <p>Kelola profil dan lihat pendaftaran lombamu.</p>
+  </div>
+
+  <div class="layout">
+    <div class="box tabs" role="tablist" aria-label="Menu akun">
+      <button class="tab" role="tab" id="t-info" type="button">Info Profil</button>
+      <button class="tab" role="tab" id="t-edit" type="button">Edit Profil</button>
+      <button class="tab" role="tab" id="t-upload" type="button">Hasil Upload</button>
+    </div>
+
+    <div class="box main">
+      <section role="tabpanel" id="p-info" aria-labelledby="t-info">
+        <h2>Info Profil</h2>
+        <p class="sub">Data akun yang kamu isi saat membuat akun.</p>
+        <div class="who"><div class="avatar" id="avatar"></div><div><b id="i-nama"></b><span id="i-email"></span></div></div>
+        <dl class="info">
+          <div><dt>Nomor telepon</dt><dd id="i-telepon"></dd></div>
+          <div><dt>Jenis kelamin</dt><dd id="i-gender"></dd></div>
+          <div><dt>Tempat lahir</dt><dd id="i-tempat"></dd></div>
+          <div><dt>Tanggal lahir</dt><dd id="i-tgl"></dd></div>
+          <div class="full"><dt>Alamat</dt><dd id="i-alamat"></dd></div>
+          <div class="full"><dt>Akun dibuat</dt><dd id="i-dibuat"></dd></div>
+        </dl>
+      </section>
+
+      <section role="tabpanel" id="p-edit" aria-labelledby="t-edit" hidden>
+        <h2>Edit Profil</h2>
+        <p class="sub">Perbarui datamu. Email tidak bisa diubah.</p>
+        <form id="form-edit" novalidate>
+          <div class="field" data-f="nama"><label class="lbl" for="e-nama">Nama lengkap</label><input type="text" id="e-nama" autocomplete="name"><span class="err">Nama lengkap wajib diisi.</span></div>
+          <div class="field"><label class="lbl" for="e-email">Email</label><input type="email" id="e-email" readonly></div>
+          <div class="field" data-f="telepon"><label class="lbl" for="e-telepon">Nomor telepon</label><input type="tel" id="e-telepon" inputmode="tel" autocomplete="tel"><span class="err">Masukkan nomor telepon yang valid.</span></div>
+          <fieldset class="field" style="border:0;padding:0"><legend class="lbl">Jenis kelamin</legend>
+            <div class="radios"><label><input type="radio" name="gender" value="Laki-laki"> Laki-laki</label><label><input type="radio" name="gender" value="Perempuan"> Perempuan</label></div>
+          </fieldset>
+          <div class="row">
+            <div class="field"><label class="lbl" for="e-tempat">Tempat lahir</label><input type="text" id="e-tempat"></div>
+            <div class="field"><label class="lbl" for="e-tgl">Tanggal lahir</label><input type="date" id="e-tgl"></div>
+          </div>
+          <div class="field"><label class="lbl" for="e-alamat">Alamat</label><textarea id="e-alamat" rows="3"></textarea></div>
+          <button class="btn" type="submit">Simpan perubahan</button>
+          <div class="status" id="st-edit" role="status" aria-live="polite"></div>
+        </form>
+      </section>
+
+      <section role="tabpanel" id="p-upload" aria-labelledby="t-upload" hidden>
+        <h2>Hasil Upload</h2>
+        <p class="sub">Pendaftaran lomba dan berkas yang sudah kamu kirim.</p>
+        <div id="daftar"></div>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="f-grid">
+      <div class="f-brand">
+        <a class="brand" href="https://kemenham.go.id" target="_blank" rel="noopener noreferrer">
+          <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="#1d4ed8" stroke="#fff" stroke-width="2"/><path d="M6 20c3 6 14 8 19-1" fill="none" stroke="#facc15" stroke-width="4" stroke-linecap="round"/></svg>
+          Kementerian Hak Asasi Manusia
+        </a>
+        <small>Republik Indonesia</small>
+        <p>Jl. HR. Rasuna Said Kav - 4 - 5 Kuningan<br>Jakarta Selatan Jakarta Indonesia</p>
+        <p>Telepon: <a href="tel:0212526153">0212526153</a><br>Email: <a href="mailto:info@kemenham.go.id">info@kemenham.go.id</a></p>
+      </div>
+      <nav class="f-col" aria-label="Tentang Kami">
+        <h4>Tentang Kami</h4>
+        <a href="https://kemenham.go.id/tentang-kemenham" target="_blank" rel="noopener noreferrer">Profil</a>
+        <a href="https://kemenham.go.id/tugas-fungsi" target="_blank" rel="noopener noreferrer">Tugas dan Fungsi</a>
+        <a href="https://kemenham.go.id/struktur-organisasi-kemenham" target="_blank" rel="noopener noreferrer">Struktur Organisasi</a>
+        <a href="https://kemenham.go.id/kontak-kami" target="_blank" rel="noopener noreferrer">Hubungi Kami</a>
+      </nav>
+      <nav class="f-col" aria-label="Layanan">
+        <h4>Layanan</h4>
+        <a href="https://simasham.kemenham.go.id/" target="_blank" rel="noopener noreferrer">Pengaduan HAM</a>
+        <a href="https://kemenham.go.id/informasi-publik" target="_blank" rel="noopener noreferrer">Informasi Publik</a>
+        <a href="https://hamdans.kemenham.go.id/" target="_blank" rel="noopener noreferrer">Berita</a>
+        <a href="https://kemenham.go.id/informasi-publik/dokumen-dan-panduan-ham" target="_blank" rel="noopener noreferrer">Unduhan</a>
+      </nav>
+      <nav class="f-col" aria-label="Ikuti Kami">
+        <h4>Ikuti Kami</h4>
+        <a href="https://www.instagram.com/kementerian_ham/" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://x.com/kementerianham" target="_blank" rel="noopener noreferrer">X (Twitter)</a>
+        <a href="https://www.youtube.com/@kementerian_ham" target="_blank" rel="noopener noreferrer">YouTube</a>
+        <a href="https://www.facebook.com/share/1HLEXivb6G/" target="_blank" rel="noopener noreferrer">Facebook</a>
+      </nav>
+    </div>
+  </div>
+  <div class="f-bottom">© 2026 Kementerian Hak Asasi Manusia Republik Indonesia. Hak cipta dilindungi.</div>
+</footer>
+
+<script>
+  /* ===== Data contoh. Ganti dengan data dari server (PHP/MySQL) ===== */
+  const ME = window.KH && KH.me();
+  const USER = ME ? ME.profil : { nama:'Tamu', email:'-', telepon:'', gender:'', tempat:'', tgl:'', alamat:'', dibuat:new Date().toISOString().slice(0, 10) };
+  const DAFTAR = ME ? ME.daftar : [];
+  const simpan = () => { if (window.KH) KH.save(); };
+  const HOME_URL = 'home.html'; // ganti dengan alamat beranda, mis. 'home.html' atau '/'
+  document.querySelectorAll('[data-home]').forEach(a => a.href = HOME_URL);
+
+  const $ = s => document.querySelector(s);
+  const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const tgl = (iso, jam) => {
+    const d = new Date(iso); if (isNaN(d)) return '-';
+    const t = d.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+    return jam ? t + ' pukul ' + d.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' }) : t;
+  };
+
+  /* ===== Tab ===== */
+  const TABS = ['info', 'edit', 'upload'];
+  function show(t) {
+    if (!TABS.includes(t)) t = 'info';
+    TABS.forEach(n => {
+      $('#p-' + n).hidden = n !== t;
+      $('#t-' + n).classList.toggle('on', n === t);
+      $('#t-' + n).setAttribute('aria-selected', n === t);
+    });
+    try { history.replaceState(null, '', '#' + t); } catch (e) {}
+  }
+  TABS.forEach(n => $('#t-' + n).addEventListener('click', () => show(n)));
+  window.addEventListener('hashchange', () => show(location.hash.slice(1)));
+
+  /* ===== Info profil ===== */
+  function renderInfo() {
+    $('#avatar').textContent = (USER.nama.trim()[0] || '?').toUpperCase();
+    $('#i-nama').textContent = USER.nama;
+    $('#i-email').textContent = USER.email;
+    $('#i-telepon').textContent = USER.telepon || '-';
+    $('#i-gender').textContent = USER.gender || '-';
+    $('#i-tempat').textContent = USER.tempat || '-';
+    $('#i-tgl').textContent = USER.tgl ? tgl(USER.tgl + 'T00:00:00') : '-';
+    $('#i-alamat').textContent = USER.alamat || '-';
+    $('#i-dibuat').textContent = tgl(USER.dibuat + 'T00:00:00');
+  }
+
+  /* ===== Edit profil ===== */
+  function isiForm() {
+    $('#e-nama').value = USER.nama; $('#e-email').value = USER.email; $('#e-telepon').value = USER.telepon;
+    $('#e-tempat').value = USER.tempat; $('#e-tgl').value = USER.tgl; $('#e-alamat').value = USER.alamat;
+    document.querySelectorAll('[name=gender]').forEach(r => r.checked = r.value === USER.gender);
+  }
+  $('#form-edit').addEventListener('submit', e => {
+    e.preventDefault();
+    const nama = $('#e-nama').value.trim(), telp = $('#e-telepon').value.trim().replace(/[\s-]/g, '');
+    const okNama = !!nama, okTelp = /^(\+62|62|0)8[0-9]{7,12}$/.test(telp);
+    $('[data-f=nama]').classList.toggle('invalid', !okNama);
+    $('[data-f=telepon]').classList.toggle('invalid', !okTelp);
+    const st = $('#st-edit'); st.classList.add('on');
+    if (!okNama || !okTelp) { st.textContent = 'Ada isian yang belum benar. Periksa kolom bertanda merah.'; return; }
+    // TODO: kirim ke server, mis. fetch('perbarui-profil.php', { method:'POST', body:new FormData(...) })
+    Object.assign(USER, { nama, telepon:$('#e-telepon').value.trim(), tempat:$('#e-tempat').value.trim(), tgl:$('#e-tgl').value,
+      alamat:$('#e-alamat').value.trim(), gender:(document.querySelector('[name=gender]:checked') || {}).value || '' });
+    simpan(); renderInfo();
+    st.textContent = 'Perubahan tersimpan di halaman ini. Penyimpanan ke server belum terhubung.';
+  });
+
+  /* ===== Hasil upload ===== */
+  function renderDaftar() {
+    const el = $('#daftar');
+    if (!DAFTAR.length) {
+      el.innerHTML = `<div class="empty">Kamu belum mendaftar lomba apa pun.<br>
+        <a class="btn" href="daftar-buku-cerita.html">Daftar Buku Cerita</a><a class="btn blue" style="color:#fff" href="daftar-komik.html">Daftar Komik</a></div>`;
+      return;
+    }
+    el.innerHTML = DAFTAR.map((d, i) => {
+      const aksi = d.tahap === 'terkirim'
+        ? `<div class="notice">Karya ${d.karya ? '“' + esc(d.karya.judul) + '” ' : ''}sudah diterima panitia.</div>`
+        : d.tahap === 'terbuka'
+          ? `<div class="notice">Pengumpulan karya sudah dibuka.<br><a class="btn" href="unggah-${esc(d.kategori)}.html">Unggah karya →</a></div>`
+          : `<div class="notice">Karya belum bisa diunggah. Panitia akan mengirim notifikasi saat pengumpulan karya dibuka.<br><button class="btn" type="button" disabled>Unggah karya →</button></div>`;
+      return `<article class="reg">
+        <h3>${esc(d.lomba)}</h3>
+        <div class="side"><span class="badge">${esc(d.status)}</span>${d.tahap === 'terkirim' ? '' : `<button class="del" type="button" data-i="${i}">Hapus</button>`}</div>
+        <div class="meta">Peserta: ${esc(d.peserta)} · ${esc(d.tim)}<br>Asal: ${esc(d.asal)}<br>Mendaftar: ${tgl(d.waktu, true)}</div>
+        ${aksi}</article>`;
+    }).join('');
+  }
+  $('#daftar').addEventListener('click', e => {
+    const b = e.target.closest('.del'); if (!b) return;
+    if (!confirm('Hapus pendaftaran ini? Kamu perlu mendaftar ulang kalau berubah pikiran.')) return;
+    // TODO: minta server menghapus; server harus menolak kalau karya sudah dikirim atau pendaftaran sudah ditutup
+    DAFTAR.splice(+b.dataset.i, 1); simpan(); renderDaftar();
+  });
+
+  // Tombol Log-out ditangani oleh kemenham.js
+
+  renderInfo(); isiForm(); renderDaftar();
+  show(location.hash.slice(1));
+</script>
+</body>
+</html>
