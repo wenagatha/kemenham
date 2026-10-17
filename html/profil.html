@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Akun Saya | Kementerian Hak Asasi Manusia</title>
+<link rel="stylesheet" href="../css/profil.css">
+<script src="../js/kemenham.js"></script>
+</head>
+<body>
+
+<header class="wrap nav">
+  <div class="brand">
+    <img class="brand-logo" src="../logo-kemenham.png" alt="Logo Kementerian Hak Asasi Manusia">
+    <span>Kementerian Hak Asasi Manusia</span>
+  </div>
+  <div class="actions">
+    <a class="chip" href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a6 6 0 0 0-6 6v4l-2 4h16l-2-4V8a6 6 0 0 0-6-6zm-2 18a2 2 0 0 0 4 0z"/></svg><span>Notifikasi</span><i class="dot" aria-label="Ada notifikasi baru"></i></a>
+    <a class="chip on" href="#info" aria-current="page"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8" r="4.5"/><path d="M3 21c0-5 4-7.500 9-7.500s9 2.500 9 7.500z"/></svg><span>Akun</span></a>
+    <button class="chip" type="button" id="logout"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" aria-hidden="true"><path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/></svg><span>Log-out</span></button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="head">
+    <a class="back" href="#" data-home>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      Kembali ke beranda
+    </a>
+    <h1>Akun Saya</h1>
+    <p>Kelola profil dan lihat pendaftaran lombamu.</p>
+  </div>
+
+  <div class="layout">
+    <div class="box tabs" role="tablist" aria-label="Menu akun">
+      <button class="tab" role="tab" id="t-info" type="button">Info Profil</button>
+      <button class="tab" role="tab" id="t-edit" type="button">Edit Profil</button>
+      <button class="tab" role="tab" id="t-upload" type="button">Hasil Upload</button>
+    </div>
+
+    <div class="box main">
+      <section role="tabpanel" id="p-info" aria-labelledby="t-info">
+        <h2>Info Profil</h2>
+        <p class="sub">Data akun yang kamu isi saat membuat akun.</p>
+        <div class="who"><div class="avatar" id="avatar"></div><div><b id="i-nama"></b><span id="i-email"></span></div></div>
+        <dl class="info">
+          <div><dt>Nomor telepon</dt><dd id="i-telepon"></dd></div>
+          <div><dt>Jenis kelamin</dt><dd id="i-gender"></dd></div>
+          <div><dt>Tempat lahir</dt><dd id="i-tempat"></dd></div>
+          <div><dt>Tanggal lahir</dt><dd id="i-tgl"></dd></div>
+          <div class="full"><dt>Alamat</dt><dd id="i-alamat"></dd></div>
+          <div class="full"><dt>Akun dibuat</dt><dd id="i-dibuat"></dd></div>
+        </dl>
+      </section>
+
+      <section role="tabpanel" id="p-edit" aria-labelledby="t-edit" hidden>
+        <h2>Edit Profil</h2>
+        <p class="sub">Perbarui datamu. Email tidak bisa diubah.</p>
+        <form id="form-edit" novalidate>
+          <div class="field" data-f="nama"><label class="lbl" for="e-nama">Nama lengkap</label><input type="text" id="e-nama" autocomplete="name"><span class="err">Nama lengkap wajib diisi.</span></div>
+          <div class="field"><label class="lbl" for="e-email">Email</label><input type="email" id="e-email" readonly></div>
+          <div class="field" data-f="telepon"><label class="lbl" for="e-telepon">Nomor telepon</label><input type="tel" id="e-telepon" inputmode="tel" autocomplete="tel"><span class="err">Masukkan nomor telepon yang valid.</span></div>
+          <fieldset class="field" style="border:0;padding:0"><legend class="lbl">Jenis kelamin</legend>
+            <div class="radios"><label><input type="radio" name="gender" value="Laki-laki"> Laki-laki</label><label><input type="radio" name="gender" value="Perempuan"> Perempuan</label></div>
+          </fieldset>
+          <div class="row">
+            <div class="field"><label class="lbl" for="e-tempat">Tempat lahir</label><input type="text" id="e-tempat"></div>
+            <div class="field"><label class="lbl" for="e-tgl">Tanggal lahir</label><input type="date" id="e-tgl"></div>
+          </div>
+          <div class="field"><label class="lbl" for="e-alamat">Alamat</label><textarea id="e-alamat" rows="3"></textarea></div>
+          <button class="btn" type="submit">Simpan perubahan</button>
+          <div class="status" id="st-edit" role="status" aria-live="polite"></div>
+        </form>
+      </section>
+
+      <section role="tabpanel" id="p-upload" aria-labelledby="t-upload" hidden>
+        <h2>Hasil Upload</h2>
+        <p class="sub">Pendaftaran lomba dan berkas yang sudah kamu kirim.</p>
+        <div id="daftar"></div>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="f-grid">
+      <div class="f-brand">
+        <a class="brand" href="https://kemenham.go.id" target="_blank" rel="noopener noreferrer">
+          <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="#1d4ed8" stroke="#fff" stroke-width="2"/><path d="M6 20c3 6 14 8 19-1" fill="none" stroke="#facc15" stroke-width="4" stroke-linecap="round"/></svg>
+          Kementerian Hak Asasi Manusia
+        </a>
+        <small>Republik Indonesia</small>
+        <p>Jl. HR. Rasuna Said Kav - 4 - 5 Kuningan<br>Jakarta Selatan Jakarta Indonesia</p>
+        <p>Telepon: <a href="tel:0212526153">0212526153</a><br>Email: <a href="mailto:info@kemenham.go.id">info@kemenham.go.id</a></p>
+      </div>
+      <nav class="f-col" aria-label="Tentang Kami">
+        <h4>Tentang Kami</h4>
+        <a href="https://kemenham.go.id/tentang-kemenham" target="_blank" rel="noopener noreferrer">Profil</a>
+        <a href="https://kemenham.go.id/tugas-fungsi" target="_blank" rel="noopener noreferrer">Tugas dan Fungsi</a>
+        <a href="https://kemenham.go.id/struktur-organisasi-kemenham" target="_blank" rel="noopener noreferrer">Struktur Organisasi</a>
+        <a href="https://kemenham.go.id/kontak-kami" target="_blank" rel="noopener noreferrer">Hubungi Kami</a>
+      </nav>
+      <nav class="f-col" aria-label="Layanan">
+        <h4>Layanan</h4>
+        <a href="https://simasham.kemenham.go.id/" target="_blank" rel="noopener noreferrer">Pengaduan HAM</a>
+        <a href="https://kemenham.go.id/informasi-publik" target="_blank" rel="noopener noreferrer">Informasi Publik</a>
+        <a href="https://hamdans.kemenham.go.id/" target="_blank" rel="noopener noreferrer">Berita</a>
+        <a href="https://kemenham.go.id/informasi-publik/dokumen-dan-panduan-ham" target="_blank" rel="noopener noreferrer">Unduhan</a>
+      </nav>
+      <nav class="f-col" aria-label="Ikuti Kami">
+        <h4>Ikuti Kami</h4>
+        <a href="https://www.instagram.com/kementerian_ham/" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://x.com/kementerianham" target="_blank" rel="noopener noreferrer">X (Twitter)</a>
+        <a href="https://www.youtube.com/@kementerian_ham" target="_blank" rel="noopener noreferrer">YouTube</a>
+        <a href="https://www.facebook.com/share/1HLEXivb6G/" target="_blank" rel="noopener noreferrer">Facebook</a>
+      </nav>
+    </div>
+  </div>
+  <div class="f-bottom">© 2026 Kementerian Hak Asasi Manusia Republik Indonesia. Hak cipta dilindungi.</div>
+</footer>
+
+<script src="../js/profil.js"></script>
+</body>
+</html>
