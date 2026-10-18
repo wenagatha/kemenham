@@ -66,7 +66,7 @@ const DEADLINE = new Date('2026-11-04T23:59:00+07:00');
     return ok;
   }
 
-  form.addEventListener('submit', e => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
     const st = $('#status');
     st.classList.remove('on');
@@ -96,7 +96,7 @@ const DEADLINE = new Date('2026-11-04T23:59:00+07:00');
       return;
     }
     try {
-      KH.tambahDaftar({
+      await KH.tambahDaftar({
         kategori, peserta: form.nama.value.trim(), tim: form.tim.value === 'kelompok' ? 'Kelompok' : 'Individu',
         anggota2: form.anggota2.value.trim(), anggota3: form.anggota3.value.trim(),
         nomor: form.nomor.value.trim(), asal: form.asal.value.trim(), email: form.email.value.trim(), wa: form.wa.value.trim()

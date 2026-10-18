@@ -2,8 +2,7 @@
   const ME = window.KH && KH.me();
   const USER = ME ? ME.profil : { nama:'Tamu', email:'-', telepon:'', gender:'', tempat:'', tgl:'', alamat:'', dibuat:new Date().toISOString().slice(0, 10) };
   const DAFTAR = ME ? ME.daftar : [];
-  const simpan = () => { if (window.KH) KH.save(); };
-  const HOME_URL = 'home.html'; // ganti dengan alamat beranda, mis. 'home.html' atau '/'
+    const HOME_URL = 'home.html'; // ganti dengan alamat beranda, mis. 'home.html' atau '/'
   document.querySelectorAll('[data-home]').forEach(a => a.href = HOME_URL);
 
   const $ = s => document.querySelector(s);
@@ -47,7 +46,7 @@
     $('#e-tempat').value = USER.tempat; $('#e-tgl').value = USER.tgl; $('#e-alamat').value = USER.alamat;
     document.querySelectorAll('[name=gender]').forEach(r => r.checked = r.value === USER.gender);
   }
-  $('#form-edit').addEventListener('submit', e => {
+  $('#form-edit').addEventListener('submit', async e => {
     e.preventDefault();
     const nama = $('#e-nama').value.trim(), telp = $('#e-telepon').value.trim().replace(/[\s-]/g, '');
     const okNama = !!nama, okTelp = /^(\+62|62|0)8[0-9]{7,12}$/.test(telp);
@@ -55,11 +54,15 @@
     $('[data-f=telepon]').classList.toggle('invalid', !okTelp);
     const st = $('#st-edit'); st.classList.add('on');
     if (!okNama || !okTelp) { st.textContent = 'Ada isian yang belum benar. Periksa kolom bertanda merah.'; return; }
-    // TODO: kirim ke server, mis. fetch('perbarui-profil.php', { method:'POST', body:new FormData(...) })
-    Object.assign(USER, { nama, telepon:$('#e-telepon').value.trim(), tempat:$('#e-tempat').value.trim(), tgl:$('#e-tgl').value,
-      alamat:$('#e-alamat').value.trim(), gender:(document.querySelector('[name=gender]:checked') || {}).value || '' });
-    simpan(); renderInfo();
-    st.textContent = 'Perubahan tersimpan di halaman ini. Penyimpanan ke server belum terhubung.';
+    try {
+      const baru = await KH.simpanProfil({ nama, telepon: $('#e-telepon').value.trim(), tempat: $('#e-tempat').value.trim(),
+        tgl: $('#e-tgl').value, alamat: $('#e-alamat').value.trim(),
+        gender: (document.querySelector('[name=gender]:checked') || {}).value || '' });
+      Object.assign(USER, baru); renderInfo();
+      st.textContent = 'Perubahan tersimpan.';
+    } catch (error) {
+      st.textContent = error.message;
+    }
   });
 
   /* ===== Hasil upload ===== */
@@ -72,7 +75,7 @@
     }
     el.innerHTML = DAFTAR.map((d, i) => {
       const aksi = d.tahap === 'terkirim'
-        ? `<div class="notice">Karya ${d.karya ? '“' + esc(d.karya.judul) + '” ' : ''}sudah diterima panitia.</div>`
+        ? `<div class="notice">Karya ${d.karya ? '“' + esc(d.karya.judul) + '” ' : ''}sudah diunggah dan tercatat di sistem.</div>`
         : d.tahap === 'terbuka'
           ? `<div class="notice">Pengumpulan karya sudah dibuka.<br><a class="btn" href="unggah-${esc(d.kategori)}.html">Unggah karya →</a></div>`
           : `<div class="notice">Karya belum bisa diunggah. Panitia akan mengirim notifikasi saat pengumpulan karya dibuka.<br><button class="btn" type="button" disabled>Unggah karya →</button></div>`;
@@ -83,17 +86,17 @@
         ${aksi}</article>`;
     }).join('');
   }
-  $('#daftar').addEventListener('click', e => {
+  $('#daftar').addEventListener('click', async e => {
     const b = e.target.closest('.del'); if (!b) return;
     if (!confirm('Hapus pendaftaran ini? Kamu perlu mendaftar ulang kalau berubah pikiran.')) return;
-    // TODO: minta server menghapus; server harus menolak kalau karya sudah dikirim atau pendaftaran sudah ditutup
-    DAFTAR.splice(+b.dataset.i, 1); simpan(); renderDaftar();
+    try {
+      await KH.hapusDaftar(DAFTAR[+b.dataset.i].id);
+      DAFTAR.splice(0, DAFTAR.length, ...KH.me().daftar);
+      renderDaftar();
+    } catch (error) { alert(error.message); }
   });
 
   // Tombol Log-out ditangani oleh kemenham.js
 
   renderInfo(); isiForm(); renderDaftar();
   show(location.hash.slice(1));
-  window.addEventListener('storage', event => {
-    if (event.key === 'kemenham-app-v1') location.reload();
-  });

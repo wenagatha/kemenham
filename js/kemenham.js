@@ -1,86 +1,214 @@
 (function () {
   'use strict';
 
-  const STORAGE_KEY = 'kemenham-app-v1';
+  // Alamat API PHP, relatif terhadap folder html/
+  const API = '../php/api/';
   const LOMBA = {
     'buku-cerita': 'Buku Cerita',
     komik: 'Komik'
   };
   const cfg = { HANYA_SATU_LOMBA: true };
+  let pageNotificationShown = false;
 
-  function readState() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return { users: {}, currentUser: '' };
+  // Data akun sekarang berasal dari server (session PHP), bukan localStorage.
+  // Dimuat sekali saat halaman dibuka dengan request sinkron supaya KH.me() langsung siap dipakai.
+  let state = { user: muat() };
 
+  function muat() {
     try {
-      const state = JSON.parse(saved);
-      if (!state || typeof state !== 'object' || !state.users || typeof state.users !== 'object') {
-        throw new Error('Data aplikasi tidak valid.');
-      }
-      return state;
+      const x = new XMLHttpRequest();
+      x.open('GET', API + 'auth.php?aksi=saya', false);
+      x.withCredentials = true;
+      x.send();
+      const j = JSON.parse(x.responseText);
+      return j.ok ? j.data : null;
     } catch (error) {
-      console.error('Gagal membaca data aplikasi Kemenham.', error);
-      throw error;
+      console.warn('Gagal memuat akun dari server. Pastikan Apache dan MySQL menyala, dan halaman dibuka lewat http://localhost/.', error);
+      return null;
     }
   }
 
-  let state = readState();
+  async function kirim(url, body) {
+    let res;
+    try {
+      res = await fetch(API + url, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body || {})
+      });
+    } catch (error) {
+      throw new Error('Tidak bisa terhubung ke server. Pastikan Apache dan MySQL di XAMPP sudah menyala.');
+    }
+    let json;
+    try { json = await res.json(); } catch (error) {
+      throw new Error('Respons server tidak valid. Cek log error Apache/PHP.');
+    }
+    if (!json.ok) throw new Error(json.pesan || 'Terjadi kesalahan.');
+    return json.data;
+  }
 
-  function save() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  function notify() {
     window.dispatchEvent(new CustomEvent('kemenham:change'));
   }
 
-  function normalizedEmail(email) {
-    return String(email || '').trim().toLowerCase();
+  function safe(value) {
+    return String(value ?? '').replace(/[&<>"']/g, char => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[char]);
+  }
+
+  function showToast(message) {
+    ensureNotificationPanel();
+    let toast = document.getElementById('kh-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'kh-toast';
+      toast.className = 'kh-toast';
+      toast.setAttribute('role', 'status');
+      toast.setAttribute('aria-live', 'polite');
+      document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.classList.add('on');
+    clearTimeout(toast.dismissTimer);
+    toast.dismissTimer = setTimeout(() => toast.classList.remove('on'), 5000);
+  }
+
+  function showPageNotification() {
+    if (pageNotificationShown) return;
+    pageNotificationShown = true;
+    const params = new URLSearchParams(location.search);
+    const authEvent = params.get('auth-event');
+    const user = me();
+    if (authEvent && user) {
+      const nama = user.profil.nama.split(/\s+/)[0] || 'Peserta';
+      showToast(authEvent === 'signup'
+        ? 'Akun berhasil dibuat. Selamat datang, ' + nama + '!'
+        : 'Selamat datang kembali, ' + nama + '!');
+      params.delete('auth-event');
+      const query = params.toString();
+      history.replaceState(null, '', location.pathname + (query ? '?' + query : '') + location.hash);
+      return;
+    }
+    if (params.has('registered') && user) {
+      const category = location.pathname.includes('buku-cerita') ? 'buku-cerita' : 'komik';
+      const entry = daftar(category);
+      if (entry) showToast('Pendaftaran lomba ' + entry.lomba + ' berhasil. Kamu bisa melanjutkan dengan mengunggah karya.');
+    }
+  }
+
+  function ensureNotificationPanel() {
+    let panel = document.getElementById('kh-notification-panel');
+    if (panel) return panel;
+    if (!document.getElementById('kh-notification-style')) {
+      const style = document.createElement('style');
+      style.id = 'kh-notification-style';
+      style.textContent = `
+        .chip .dot { display:inline-block; width:8px; height:8px; margin-left:2px; border-radius:50%; background:#dc2626; }
+        .kh-notification-panel { position:fixed; z-index:1000; top:76px; right:max(16px,calc((100vw - 1120px)/2)); width:min(360px,calc(100vw - 32px)); max-height:min(460px,calc(100vh - 96px)); overflow:hidden; display:none; flex-direction:column; color:#14213d; background:#fff; border:1px solid #c7d4f5; border-radius:14px; box-shadow:0 16px 40px #14213d30; }
+        .kh-notification-panel.on { display:flex; }
+        .kh-notification-head { display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:1px solid #e5eaf5; }
+        .kh-notification-head h2 { margin:0; font-size:16px; }
+        .kh-notification-head button,.kh-notification-read { border:0; background:transparent; color:#1d4ed8; font:inherit; cursor:pointer; }
+        .kh-notification-list { overflow:auto; padding:6px 12px; }
+        .kh-notification-item { padding:11px 4px; border-bottom:1px solid #edf0f7; }
+        .kh-notification-item:last-child { border-bottom:0; }
+        .kh-notification-item.unread { border-left:3px solid #1d4ed8; padding-left:9px; }
+        .kh-notification-item p { margin:0; font-size:13px; line-height:1.45; }
+        .kh-notification-item time { display:block; margin-top:5px; color:#5d6b8a; font-size:11px; }
+        .kh-notification-empty { padding:20px 8px; color:#5d6b8a; text-align:center; font-size:13px; }
+        .kh-notification-foot { padding:10px 16px; border-top:1px solid #e5eaf5; text-align:right; }
+        .kh-notification-read { font-size:12px; font-weight:700; }
+        .kh-toast { position:fixed; z-index:1100; right:20px; bottom:20px; max-width:min(420px,calc(100vw - 40px)); padding:14px 18px; color:#fff; background:#14213d; border:1px solid #1d4ed8; border-radius:12px; box-shadow:0 10px 28px #14213d30; opacity:0; transform:translateY(8px); pointer-events:none; transition:opacity .18s ease,transform .18s ease; }
+        .kh-toast.on { opacity:1; transform:translateY(0); }
+        @media(prefers-reduced-motion:reduce) { .kh-toast { transition:none; } }
+      `;
+      document.head.appendChild(style);
+    }
+    panel = document.createElement('div');
+    panel.id = 'kh-notification-panel';
+    panel.className = 'kh-notification-panel';
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-label', 'Notifikasi');
+    document.body.appendChild(panel);
+    panel.addEventListener('click', event => {
+      if (event.target.closest('[data-close-notifications]')) {
+        panel.classList.remove('on');
+        document.querySelectorAll('.chip').forEach(link => {
+          if (link.querySelector('span')?.textContent.trim() === 'Notifikasi') link.setAttribute('aria-expanded', 'false');
+        });
+      } else if (event.target.closest('[data-mark-notifications-read]')) {
+        tandaiNotifikasiDibaca().catch(error => showToast(error.message));
+      }
+    });
+    document.addEventListener('click', event => {
+      if (panel.classList.contains('on') && !panel.contains(event.target) && !event.target.closest('[data-notifications-trigger]')) {
+        panel.classList.remove('on');
+        document.querySelectorAll('[data-notifications-trigger]').forEach(link => link.setAttribute('aria-expanded', 'false'));
+      }
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && panel.classList.contains('on')) {
+        panel.classList.remove('on');
+        document.querySelectorAll('[data-notifications-trigger]').forEach(link => link.setAttribute('aria-expanded', 'false'));
+      }
+    });
+    return panel;
+  }
+
+  function renderNotificationPanel() {
+    const panel = ensureNotificationPanel();
+    const notifications = getNotifications();
+    const unread = notifications.filter(item => !item.dibaca).length;
+    const entries = notifications.length
+      ? notifications.map(item => {
+          const time = item.waktu ? new Date(item.waktu) : null;
+          const waktu = time && !Number.isNaN(time.getTime())
+            ? time.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })
+            : '';
+          return '<article class="kh-notification-item' + (item.dibaca ? '' : ' unread') + '">' +
+            '<p>' + safe(item.pesan) + '</p>' +
+            (waktu ? '<time>' + safe(waktu) + '</time>' : '') + '</article>';
+        }).join('')
+      : '<div class="kh-notification-empty">' + (me() ? 'Belum ada notifikasi.' : 'Masuk untuk menyimpan dan melihat notifikasi akunmu.') + '</div>';
+    panel.innerHTML = '<header class="kh-notification-head"><h2>Notifikasi</h2>' +
+      '<button type="button" data-close-notifications aria-label="Tutup notifikasi">Tutup</button></header>' +
+      '<div class="kh-notification-list">' + entries + '</div>' +
+      (unread ? '<div class="kh-notification-foot"><button type="button" class="kh-notification-read" data-mark-notifications-read>Tandai semua dibaca</button></div>' : '');
   }
 
   function me() {
-    return state.users[state.currentUser] || null;
+    return state.user;
   }
 
-  function makeNotification(user, category, message) {
-    user.notifikasi = user.notifikasi || [];
-    user.notifikasi.unshift({
-      id: Date.now() + '-' + Math.random().toString(36).slice(2),
-      kategori: category,
-      pesan: message,
-      dibaca: false,
-      waktu: new Date().toISOString()
-    });
+  async function signup(data) {
+    try {
+      state.user = await kirim('auth.php?aksi=daftar', data);
+      notify();
+      return '';
+    } catch (error) { return error.message; }
   }
 
-  function signup(data) {
-    const email = normalizedEmail(data.email);
-    if (!email) return 'Email wajib diisi.';
-    if (state.users[email]) return 'Email ini sudah terdaftar. Silakan masuk.';
-
-    const today = new Date().toISOString().slice(0, 10);
-    state.users[email] = {
-      profil: {
-        nama: [data.first_name, data.last_name].filter(Boolean).join(' ').trim(),
-        email,
-        telepon: data.phone || '',
-        gender: data.gender || '',
-        tempat: data.birth_place || '',
-        tgl: data.birth_date || '',
-        alamat: data.address || '',
-        dibuat: today
-      },
-      daftar: [],
-      notifikasi: []
-    };
-    state.currentUser = email;
-    save();
-    return '';
+  async function login(email, password) {
+    try {
+      state.user = await kirim('auth.php?aksi=masuk', { email, password });
+      notify();
+      return '';
+    } catch (error) { return error.message; }
   }
 
-  function login(email) {
-    const key = normalizedEmail(email);
-    if (!state.users[key]) return 'Akun dengan email tersebut belum ditemukan. Silakan daftar terlebih dahulu.';
-    state.currentUser = key;
-    save();
-    return '';
+  async function logout() {
+    try { await kirim('auth.php?aksi=keluar'); } finally {
+      state.user = null;
+      notify();
+    }
+  }
+
+  async function simpanProfil(data) {
+    state.user = await kirim('profil.php', data);
+    notify();
+    return state.user.profil;
   }
 
   function daftar(category) {
@@ -88,40 +216,46 @@
     return user ? user.daftar.find(item => item.kategori === category) || null : null;
   }
 
-  function tambahDaftar(data) {
-    const user = me();
-    if (!user) throw new Error('Masuk ke akun terlebih dahulu sebelum mendaftar lomba.');
-
-    const existing = daftar(data.kategori);
-    if (existing) return existing;
-    if (cfg.HANYA_SATU_LOMBA && user.daftar.length) {
-      throw new Error('Akun ini sudah terdaftar pada lomba lain.');
-    }
-
-    const entry = {
-      ...data,
-      lomba: LOMBA[data.kategori],
-      kategori: data.kategori,
-      status: 'Terdaftar',
-      tahap: 'terbuka',
-      waktu: new Date().toISOString(),
-      karya: null
-    };
-    user.daftar.push(entry);
-    makeNotification(user, data.kategori, 'Pendaftaran ' + LOMBA[data.kategori] + ' berhasil. Pengumpulan karya sudah dapat dilakukan.');
-    save();
-    return entry;
+  async function tambahDaftar(data) {
+    if (!me()) throw new Error('Masuk ke akun terlebih dahulu sebelum mendaftar lomba.');
+    state.user = await kirim('pendaftaran.php?aksi=simpan', data);
+    notify();
+    return daftar(data.kategori);
   }
 
-  function kirimKarya(category, karya) {
-    const entry = daftar(category);
-    if (!entry) throw new Error('Pendaftaran lomba tidak ditemukan.');
-    if (entry.tahap !== 'terbuka') throw new Error('Pengumpulan karya tidak sedang dibuka.');
-    entry.karya = { ...karya, waktu: new Date().toISOString() };
-    entry.tahap = 'terkirim';
-    entry.status = 'Karya terkirim';
-    makeNotification(me(), category, 'Karya ' + LOMBA[category] + ' berhasil dikirim.');
-    save();
+  async function hapusDaftar(id) {
+    state.user = await kirim('pendaftaran.php?aksi=hapus', { id });
+    notify();
+  }
+
+  async function kirimKarya(category, formData) {
+    formData.set('kategori', category);
+    let response;
+    try {
+      response = await fetch(API + 'karya.php', {
+        method: 'POST',
+        credentials: 'same-origin',
+        body: formData
+      });
+    } catch (error) {
+      throw new Error('Tidak bisa terhubung ke server. Pastikan Apache dan MySQL di XAMPP sudah menyala.');
+    }
+    let json;
+    try { json = await response.json(); } catch (error) {
+      throw new Error('Respons server tidak valid. Cek log error Apache/PHP.');
+    }
+    if (!json.ok) throw new Error(json.pesan || 'Karya gagal dikirim.');
+    state.user = json.data;
+    notify();
+    const latest = getNotifications()[0];
+    if (latest) showToast(latest.pesan);
+    return daftar(category);
+  }
+
+  async function tandaiNotifikasiDibaca() {
+    state.user = await kirim('notifikasi.php?aksi=baca-semua');
+    notify();
+    renderNotificationPanel();
   }
 
   function tampilkan(form, options) {
@@ -142,15 +276,8 @@
     return user ? (user.notifikasi || []) : [];
   }
 
-  function latestNotificationUrl() {
-    const notification = getNotifications().find(item => !item.dibaca);
-    if (notification && LOMBA[notification.kategori]) {
-      return 'unggah-' + notification.kategori + '.html';
-    }
-    return 'profil.html#upload';
-  }
-
   function setupNavigation() {
+    showPageNotification();
     const authAction = document.querySelector('[data-auth-action]');
     if (authAction) {
       const label = authAction.querySelector('span');
@@ -163,9 +290,7 @@
         authAction.addEventListener('click', event => {
           if (!me()) return;
           event.preventDefault();
-          state.currentUser = '';
-          save();
-          window.location.href = 'auth-page.html#login';
+          logout().then(() => { window.location.href = 'auth-page.html#login'; });
         });
       }
     }
@@ -175,8 +300,11 @@
       if (!label) return;
       if (label.textContent.trim() === 'Notifikasi') {
         const unread = getNotifications().filter(item => !item.dibaca).length;
-        link.href = latestNotificationUrl();
+        link.dataset.notificationsTrigger = 'true';
+        link.href = '#notifications';
         link.setAttribute('aria-label', unread ? 'Notifikasi, ' + unread + ' belum dibaca' : 'Notifikasi');
+        link.setAttribute('aria-haspopup', 'dialog');
+        link.setAttribute('aria-expanded', 'false');
         let dot = link.querySelector('.dot');
         if (unread && !dot) {
           dot = document.createElement('i');
@@ -189,13 +317,12 @@
         if (!link.dataset.notificationsBound) {
           link.dataset.notificationsBound = 'true';
           link.addEventListener('click', event => {
-            const user = me();
-            if (!user) return;
             event.preventDefault();
-            const destination = link.href;
-            user.notifikasi.forEach(item => { item.dibaca = true; });
-            save();
-            window.location.href = destination;
+            const panel = ensureNotificationPanel();
+            const opening = !panel.classList.contains('on');
+            if (opening) renderNotificationPanel();
+            panel.classList.toggle('on', opening);
+            link.setAttribute('aria-expanded', String(opening));
           });
         }
       } else if (label.textContent.trim() === 'Akun') {
@@ -208,23 +335,12 @@
       button.dataset.logoutBound = 'true';
       button.addEventListener('click', event => {
         event.preventDefault();
-        state.currentUser = '';
-        save();
-        window.location.href = 'auth-page.html#login';
+        logout().then(() => { window.location.href = 'auth-page.html#login'; });
       });
     });
   }
 
-  function refreshState() {
-    state = readState();
-    setupNavigation();
-    window.dispatchEvent(new CustomEvent('kemenham:change'));
-  }
-
   window.addEventListener('kemenham:change', setupNavigation);
-  window.addEventListener('storage', event => {
-    if (event.key === STORAGE_KEY) refreshState();
-  });
   document.addEventListener('DOMContentLoaded', setupNavigation);
 
   window.KH = {
@@ -237,12 +353,9 @@
     tambahDaftar,
     kirimKarya,
     tampilkan,
-    save,
+    simpanProfil,
+    hapusDaftar,
     getNotifications,
-    latestNotificationUrl,
-    logout() {
-      state.currentUser = '';
-      save();
-    }
+    logout
   };
 })();

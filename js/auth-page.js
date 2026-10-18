@@ -97,28 +97,31 @@ const card = document.getElementById('card');
   start();
 
 
-  /* ===== Masuk / daftar. Sementara memakai kemenham.js, nanti ganti dengan PHP ===== */
+  /* ===== Masuk / daftar: dikirim ke php/api/auth.php lewat kemenham.js ===== */
   if (window.KH) {
     const next = new URLSearchParams(location.search).get('next') || '';
     const tujuan = /^[\w()%.\- ]+\.html(#\w+)?$/.test(next) ? next : 'home.html';
     const errEl = document.getElementById('auth-err');
-    document.getElementById('auth-form').addEventListener('submit', e => {
+    document.getElementById('auth-form').addEventListener('submit', async e => {
       e.preventDefault();
       const f = e.target, v = n => f[n].value.trim();
       const salah = m => { errEl.textContent = m; errEl.hidden = false; };
       errEl.hidden = true;
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v('email'))) return salah('Masukkan alamat email yang valid.');
       if (!f.password.value) return salah('Kata sandi wajib diisi.');
+      if (card.dataset.mode === 'signup' && f.password.value.length < 8) return salah('Kata sandi minimal 8 karakter.');
       let pesan;
       if (card.dataset.mode === 'signup') {
         if (!v('first_name')) return salah('Nama depan wajib diisi.');
         if (!f.gender.value || !f.birth_date.value) return salah('Lengkapi jenis kelamin dan tanggal lahir.');
-        pesan = KH.signup({ first_name: v('first_name'), last_name: v('last_name'), email: v('email'), phone: v('phone'),
+        pesan = await KH.signup({ password: f.password.value, first_name: v('first_name'), last_name: v('last_name'), email: v('email'), phone: v('phone'),
           gender: f.gender.value, birth_place: v('birth_place'), birth_date: f.birth_date.value, address: v('address') });
       } else {
-        pesan = KH.login(v('email'));
+        pesan = await KH.login(v('email'), f.password.value);
       }
       if (pesan) return salah(pesan);
-      location.href = tujuan;
+      const target = new URL(tujuan, location.href);
+      target.searchParams.set('auth-event', card.dataset.mode);
+      location.href = target.href;
     });
   }

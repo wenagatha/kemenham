@@ -85,35 +85,37 @@ const KAT = {
     const f = i.closest('.field'); if (f && f.classList.contains('invalid') && i.type !== 'file') setErr(f, '');
   }));
 
-  form.addEventListener('submit', e => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
     const st = $('#status');
+    const submit = form.querySelector('[type=submit]');
     st.classList.remove('on');
     if (!validasi()) {
       st.textContent = 'Ada isian yang belum benar. Periksa kolom bertanda merah.';
       st.classList.add('on');
       return;
     }
-    // TODO: kirim ke backend (PHP) di sini, mis. fetch('simpan-karya.php', { method:'POST', body:new FormData(form) })
-    // Server wajib memeriksa ulang tipe file, ukuran, dan apakah pengumpulan karya sudah dibuka.
-    // Atur upload_max_filesize dan post_max_size di server agar cukup untuk total sekitar 220 MB.
     if (!window.KH) {
       st.textContent = 'Isian sudah lengkap. Pengiriman ke server belum terhubung.';
       st.classList.add('on');
       return;
     }
-    KH.kirimKarya(kategori, {
-      judul: form.judul.value.trim(),
-      pdf: form.pdf.files[0].name,
-      word: c.word && form.word.files[0] ? form.word.files[0].name : '',
-      kartu: form.kartu.files[0].name,
-      pernyataan: form.pernyataan.files[0].name
-    });
-    KH.tampilkan(form, {
-      judul: 'Karya terkirim',
-      teks: 'Terima kasih! Karyamu sudah tercatat dan statusnya bisa dilihat di profil. Catatan: server belum terhubung, jadi file belum benar-benar tersimpan.',
-      tombol: [{ label: 'Lihat di profil', href: 'profil.html#upload', kuning: true }, { label: 'Kembali ke beranda', href: 'home.html' }]
-    });
+    submit.disabled = true;
+    st.textContent = 'Sedang mengunggah karya dan dokumen pendukung...';
+    st.classList.add('on');
+    try {
+      await KH.kirimKarya(kategori, new FormData(form));
+      KH.tampilkan(form, {
+        judul: 'Karya berhasil diunggah',
+        teks: 'Terima kasih! Karyamu sudah tersimpan dan tercatat. Notifikasi konfirmasi sudah dikirim ke akunmu.',
+        tombol: [{ label: 'Lihat di profil', href: 'profil.html#upload', kuning: true }, { label: 'Kembali ke beranda', href: 'home.html' }]
+      });
+    } catch (error) {
+      st.textContent = error.message;
+      st.classList.add('on');
+    } finally {
+      submit.disabled = false;
+    }
   });
 
   /* ===== Halaman ini hanya untuk peserta yang sudah mendaftar ===== */

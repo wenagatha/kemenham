@@ -12,7 +12,8 @@
   /* Header */
   .nav { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:18px 0; }
   .brand { display:flex; align-items:center; gap:10px; font-weight:700; font-size:15px; }
-  .brand-logo { width:34px; height:34px; object-fit:contain; flex:none; }
+  .nav .brand .brand-logo,
+  .brand-logo { width:130px; height:auto; object-fit:contain; flex:none; display:block; }
   .actions { display:flex; gap:8px; }
   .chip { position:relative; display:inline-flex; align-items:center; gap:6px; padding:8px 14px; font-size:13px; font-weight:600; border:1.5px solid var(--blue); border-radius:999px; background:#fff; color:var(--ink); cursor:pointer; font-family:inherit; }
   .chip:hover, .chip.on { background:var(--yellow); }

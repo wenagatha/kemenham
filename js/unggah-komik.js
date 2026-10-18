@@ -85,35 +85,56 @@ const KAT = {
     const f = i.closest('.field'); if (f && f.classList.contains('invalid') && i.type !== 'file') setErr(f, '');
   }));
 
-  form.addEventListener('submit', e => {
+  const tampilkanStatusFinal = (judul, teks, tombol) => {
+    KH.tampilkan(form, {
+      judul,
+      teks,
+      tombol
+    });
+  };
+
+  form.addEventListener('submit', async e => {
     e.preventDefault();
     const st = $('#status');
+    const submit = form.querySelector('[type=submit]');
     st.classList.remove('on');
+
+    if (window.KH && KH.me()) {
+      const dft = KH.daftar(kategori);
+      if (dft && dft.tahap === 'terkirim') {
+        tampilkanStatusFinal('Karyamu sudah terkirim', 'Kamu sudah mengunggah karya untuk lomba ini. Tidak ada lagi titik unggah yang dibuka.', [
+          { label: 'Lihat di profil', href: 'profil.html#upload', kuning: true },
+          { label: 'Kembali ke beranda', href: 'home.html' }
+        ]);
+        return;
+      }
+    }
+
     if (!validasi()) {
       st.textContent = 'Ada isian yang belum benar. Periksa kolom bertanda merah.';
       st.classList.add('on');
       return;
     }
-    // TODO: kirim ke backend (PHP) di sini, mis. fetch('simpan-karya.php', { method:'POST', body:new FormData(form) })
-    // Server wajib memeriksa ulang tipe file, ukuran, dan apakah pengumpulan karya sudah dibuka.
-    // Atur upload_max_filesize dan post_max_size di server agar cukup untuk total sekitar 220 MB.
     if (!window.KH) {
       st.textContent = 'Isian sudah lengkap. Pengiriman ke server belum terhubung.';
       st.classList.add('on');
       return;
     }
-    KH.kirimKarya(kategori, {
-      judul: form.judul.value.trim(),
-      pdf: form.pdf.files[0].name,
-      word: c.word && form.word.files[0] ? form.word.files[0].name : '',
-      kartu: form.kartu.files[0].name,
-      pernyataan: form.pernyataan.files[0].name
-    });
-    KH.tampilkan(form, {
-      judul: 'Karya terkirim',
-      teks: 'Terima kasih! Karyamu sudah tercatat dan statusnya bisa dilihat di profil. Catatan: server belum terhubung, jadi file belum benar-benar tersimpan.',
-      tombol: [{ label: 'Lihat di profil', href: 'profil.html#upload', kuning: true }, { label: 'Kembali ke beranda', href: 'home.html' }]
-    });
+    submit.disabled = true;
+    st.textContent = 'Sedang mengunggah karya dan dokumen pendukung...';
+    st.classList.add('on');
+    try {
+      await KH.kirimKarya(kategori, new FormData(form));
+      tampilkanStatusFinal('Karya berhasil diunggah', 'Terima kasih! Karyamu sudah tersimpan dan tercatat. Notifikasi konfirmasi sudah dikirim ke akunmu.', [
+        { label: 'Lihat di profil', href: 'profil.html#upload', kuning: true },
+        { label: 'Kembali ke beranda', href: 'home.html' }
+      ]);
+    } catch (error) {
+      st.textContent = error.message;
+      st.classList.add('on');
+    } finally {
+      submit.disabled = false;
+    }
   });
 
   /* ===== Halaman ini hanya untuk peserta yang sudah mendaftar ===== */
@@ -126,7 +147,7 @@ const KAT = {
       KH.tampilkan(form, { judul: 'Pengumpulan karya belum dibuka', teks: 'Panitia akan mengirim notifikasi saat pengumpulan karya dibuka.',
         tombol: [{ label: 'Kembali ke beranda', href: 'home.html', kuning: true }] });
     } else if (dft.tahap === 'terkirim') {
-      KH.tampilkan(form, { judul: 'Karyamu sudah terkirim', teks: 'Judul karya: ' + (dft.karya ? dft.karya.judul : '-') + '.',
+      KH.tampilkan(form, { judul: 'Karyamu sudah terkirim', teks: 'Judul karya: ' + (dft.karya ? dft.karya.judul : '-') + '. Tidak ada lagi titik unggah yang dibuka untuk karya ini.',
         tombol: [{ label: 'Lihat di profil', href: 'profil.html#upload', kuning: true }, { label: 'Kembali ke beranda', href: 'home.html' }] });
     }
   } else if (window.KH) {

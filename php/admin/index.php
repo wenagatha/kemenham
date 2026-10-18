@@ -66,7 +66,7 @@ $lombaList = $koneksi->query('SELECT id, nama FROM lomba')->fetch_all(MYSQLI_ASS
 $notif = $koneksi->query('SELECT p.nama_peserta, p.status, l.nama AS lomba, k.judul, k.dikirim_pada FROM karya k JOIN pendaftaran p ON p.id=k.pendaftaran_id JOIN lomba l ON l.id=p.lomba_id ORDER BY k.dikirim_pada DESC LIMIT 8')->fetch_all(MYSQLI_ASSOC);
 $perlu = (int)$tot['c'];
 $warna = ['Terdaftar' => '#8aa0d6', 'Karya terkirim' => '#4f7cff', 'Diverifikasi' => '#34d399', 'Perlu revisi' => '#facc15', 'Ditolak' => '#f87171'];
-$uploads = '../../uploads/';
+$uploads = 'unduh.php?f=';
 ?>
 <!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Monitoring karya | Admin Kemenham</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
