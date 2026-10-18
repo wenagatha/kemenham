@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard | Admin Kemenham</title>
+<link rel="stylesheet" href="../css/admin-dashboard.css">
+</head>
+<body>
+<header class="top" id="top"></header>
+<main class="wrap">
+  <h1>Monitoring karya peserta</h1>
+  <p class="sub">Pantau pendaftaran dan karya yang masuk, lalu perbarui statusnya.</p>
+  <div class="note" id="note" hidden>Belum ada pendaftar di situs, jadi yang tampil adalah data contoh. Perubahan status tidak disimpan.</div>
+  <section class="kpis" id="kpis"></section>
+  <section class="charts">
+    <div class="card"><h3>Status karya</h3><div id="c-donut"></div></div>
+    <div class="card"><h3>Pendaftar dan karya per lomba</h3><div id="c-bar"></div></div>
+    <div class="card"><h3>Pendaftaran per hari</h3><div id="c-line"></div></div>
+  </section>
+  <section class="card tbl">
+    <div class="filters">
+      <input id="q" type="search" placeholder="Cari nama, asal, atau judul" aria-label="Cari">
+      <select id="fl" aria-label="Filter lomba"><option value="">Semua lomba</option><option value="buku-cerita">Buku Cerita</option><option value="komik">Komik</option></select>
+      <select id="fs" aria-label="Filter status"><option value="">Semua status</option></select>
+    </div>
+    <div class="scroll"><table>
+      <thead><tr><th>Peserta</th><th>Lomba</th><th>Judul karya</th><th>Dikirim</th><th>Status</th><th></th></tr></thead>
+      <tbody id="tb"></tbody>
+    </table></div>
+    <p class="empty" id="kosong" hidden>Tidak ada data yang cocok.</p>
+  </section>
+</main>
+<dialog id="dlg">
+  <h3 id="d-judul"></h3>
+  <dl id="d-info"></dl>
+  <label class="fld">Status<select id="d-status" style="display:block;width:100%;margin-top:6px"></select></label>
+  <div class="acts"><button class="btn ghost" id="d-tutup" type="button">Tutup</button><button class="btn" id="d-simpan" type="button">Simpan status</button></div>
+</dialog>
+<script src="../js/admin-dashboard.js"></script>
+</body>
+</html>

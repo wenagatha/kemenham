@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Masuk | Admin Kemenham</title>
+<link rel="stylesheet" href="../css/admin-masuk.css">
+</head>
+<body>
+<main class="auth">
+  <section class="l">
+    <a class="logo" href="admin-masuk.html"><i></i>Admin Kemenham</a>
+    <div class="login-content">
+      <h1>Selamat datang kembali</h1>
+      <p class="sub">Belum punya akun? <a href="admin-daftar.html">Daftar</a></p>
+      <form id="f" novalidate>
+        <input type="email" name="email" placeholder="Email admin" aria-label="Email admin" autocomplete="email"><input type="password" name="password" data-pw placeholder="Kata sandi" aria-label="Kata sandi" autocomplete="current-password">
+        <label class="chk"><input type="checkbox" id="lihat"> Tampilkan kata sandi</label>
+        <p class="err" id="err" role="alert" hidden></p>
+        <button class="btn" type="submit">Masuk</button>
+      </form>
+    </div>
+  </section>
+  <section class="r"><svg viewBox="0 0 640 540" fill="none" role="img" aria-label="Ilustrasi dashboard analitik">
+    <defs>
+      <linearGradient id="board" x1="125" y1="230" x2="485" y2="445" gradientUnits="userSpaceOnUse"><stop stop-color="#2a3475"/><stop offset="1" stop-color="#161f4a"/></linearGradient>
+      <filter id="shadow" x="35" y="20" width="570" height="500" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feGaussianBlur stdDeviation="10"/></filter>
+    </defs>
+    <ellipse cx="320" cy="390" rx="238" ry="54" fill="#02040c" filter="url(#shadow)" opacity=".8"/>
+    <path d="m87 298 235-134 234 126-236 137L87 298Z" fill="url(#board)"/>
+    <path d="m87 298 233 129v23L87 321v-23Z" fill="#0f1535"/>
+    <path d="m320 427 236-137v22L320 450v-23Z" fill="#161f4a"/>
+    <path d="m112 297 207-117 208 112-208 120-207-115Z" fill="#202c66"/>
+    <path d="m145 292 82-46 89 49-82 47-89-50Z" fill="#182149"/>
+    <path d="m154 291 72-40 73 41-72 41-73-42Z" fill="#202c66"/>
+    <path d="m172 285 34-19v32l-34 19v-32Z" fill="#4f7cff"/>
+    <path d="m213 261 11-6v32l-11 6v-32Z" fill="#344894"/>
+    <path d="m233 270 11-6v32l-11 6v-32Z" fill="#facc15"/>
+    <path d="m254 283 11-6v32l-11 6v-32Z" fill="#2dd4a0"/>
+    <path d="m301 293 81-46 91 49-81 47-91-50Z" fill="#182149"/>
+    <path d="m318 292 65-37 67 37-65 38-67-38Z" fill="#202c66"/>
+    <path d="M337 300a25 25 0 0 1 44-17" stroke="#facc15" stroke-width="9" stroke-linecap="round"/>
+    <path d="M381 283a25 25 0 0 1-42 27" stroke="#41359a" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="359" cy="297" r="13" fill="#202c66"/>
+    <path d="m397 284 29-16m-29 25 43-24m-43 34 32-18" stroke="#9db0e8" stroke-width="4" stroke-linecap="round"/>
+    <path d="m205 356 81-46 95 53-81 47-95-54Z" fill="#182149"/>
+    <path d="m221 356 63-36 67 38-63 36-67-38Z" fill="#202c66"/>
+    <path d="M232 367c17-29 32 7 48-18s27-12 39-23 20 12 32 4" stroke="#4f7cff" stroke-width="3" stroke-linecap="round"/>
+    <path d="m230 376 119-68" stroke="#34416f" stroke-width="2"/>
+    <path d="m244 380 47-27m10-5 23-13m11-6 17-10" stroke="#facc15" stroke-width="4" stroke-linecap="round"/>
+    <path d="m146 220 96-55 92 51-96 55-92-51Z" fill="#202c66" stroke="#34416f" stroke-width="2"/>
+    <path d="m163 220 77-44 70 39-77 44-70-39Z" fill="#182149"/>
+    <path d="m174 221 15-9m8 4 12-7m9 3 24-14m9 25 15-9m7 4 28-16" stroke="#9db0e8" stroke-width="3" stroke-linecap="round"/>
+    <path d="m242 165 1-53m110 83 54-52m-147 122 2 70" stroke="#64739b" stroke-width="2" stroke-dasharray="4 6"/>
+    <circle cx="243" cy="111" r="4" fill="#facc15"/><circle cx="407" cy="143" r="4" fill="#4f7cff"/><circle cx="258" cy="335" r="4" fill="#2dd4a0"/>
+    <path d="m400 119 96-55 95 52-96 55-95-52Z" fill="#202c66" stroke="#34416f" stroke-width="2"/>
+    <path d="m418 118 78-44 75 42-78 44-75-42Z" fill="#182149"/>
+    <path d="m437 124 10-6v17l-10 6v-17Zm17-10 10-6v22l-10 6v-22Zm17 5 10-6v13l-10 6v-13Zm17-10 10-6v18l-10 6v-18Z" fill="#4f7cff"/>
+    <path d="m481 73 1-29m-84 75-36 22" stroke="#64739b" stroke-width="2" stroke-dasharray="4 6"/>
+    <circle cx="482" cy="44" r="4" fill="#facc15"/><circle cx="362" cy="141" r="4" fill="#2dd4a0"/>
+    <path d="m87 362 78-45 72 40-78 46-72-41Z" fill="#202c66" stroke="#34416f" stroke-width="2"/>
+    <path d="m104 362 61-35 55 31-61 36-55-32Z" fill="#182149"/>
+    <path d="m121 362 34-19m5 25 34-20" stroke="#9db0e8" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="147" cy="377" r="12" fill="#202c66"/><path d="M137 377a10 10 0 0 1 18-6" stroke="#2dd4a0" stroke-width="5" stroke-linecap="round"/>
+    <path d="m383 411 72-42 66 37-72 43-66-38Z" fill="#202c66" stroke="#34416f" stroke-width="2"/>
+    <path d="m403 410 49-28 40 23-49 29-40-24Z" fill="#182149"/>
+    <path d="m413 411 27-15m9 12 29-17" stroke="#facc15" stroke-width="4" stroke-linecap="round"/>
+    <g fill="#342b86">
+      <circle cx="133" cy="255" r="7"/><path d="m129 263 10 1 6 24-8 3-4-15-4 15-8-2 5-20-6 7-5-4 10-11Z"/>
+      <circle cx="495" cy="210" r="7"/><path d="m489 218 11 1 5 24-8 2-3-14-4 13-8-2 5-18-6 6-5-5 10-8Z"/>
+      <circle cx="197" cy="389" r="6"/><path d="m192 396 10 1 3 20-7 1-2-11-4 11-7-2 5-16-5 4-4-4 11-5Z"/>
+    </g>
+    <path d="m128 273-12 10m374-47 13-10m-307 172-13 8" stroke="#f07c9b" stroke-width="2"/>
+    <rect x="235" y="91" width="11" height="11" rx="2" fill="#f26f98" transform="rotate(45 235 91)"/>
+    <rect x="482" y="31" width="10" height="10" rx="2" fill="#25b9c8" transform="rotate(45 482 31)"/>
+    <rect x="552" y="238" width="9" height="9" rx="2" fill="#f6a36f" transform="rotate(45 552 238)"/>
+  </svg></section>
+</main>
+<script src="../js/admin-masuk.js"></script>
+</body>
+</html>

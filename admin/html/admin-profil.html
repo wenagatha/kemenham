@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Profil | Admin Kemenham</title>
+<link rel="stylesheet" href="../css/admin-profil.css">
+</head>
+<body>
+<header class="top" id="top"></header>
+<main class="wrap" style="max-width:560px">
+  <h1>Profil</h1>
+  <p class="sub">Data akun admin.</p>
+  <section class="card" style="margin-top:18px">
+    <div class="prof"><div class="av" id="av">?</div><div><b id="p-nama"></b><div class="sub" id="p-email"></div><div class="sub" id="p-dibuat"></div></div></div>
+    <form id="f" novalidate>
+      <label class="fld">Nama<input type="text" id="nama" autocomplete="name"></label>
+      <button class="btn" type="submit">Simpan perubahan</button>
+      <p class="msg" id="msg" hidden></p>
+    </form>
+  </section>
+</main>
+<script src="../js/admin-profil.js"></script>
+</body>
+</html>
