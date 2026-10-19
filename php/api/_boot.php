@@ -55,7 +55,7 @@ function data_pengguna(mysqli $db, int $uid): ?array {
 
     $daftar = [];
     $rows = $db->execute_query(
-        "SELECT p.*, l.kode, l.nama AS lomba, k.judul AS karya_judul, k.dikirim_pada
+        "SELECT p.*, l.kode, l.nama AS lomba, k.judul AS karya_judul, k.file_kartu AS karya_file_kartu, k.dikirim_pada
          FROM pendaftaran p
          JOIN lomba l ON l.id = p.lomba_id
          LEFT JOIN karya k ON k.pendaftaran_id = p.id
@@ -67,6 +67,7 @@ function data_pengguna(mysqli $db, int $uid): ?array {
             'peserta' => $r['nama_peserta'], 'tim' => $r['tipe_tim'],
             'anggota2' => $r['anggota2'] ?? '', 'anggota3' => $r['anggota3'] ?? '',
             'nomor' => $r['nomor_induk'], 'asal' => $r['asal'], 'email' => $r['email'], 'wa' => $r['whatsapp'],
+            'kartu' => !empty($r['file_kartu']) || !empty($r['karya_file_kartu']),
             'status' => $r['status'], 'tahap' => $r['tahap'], 'catatan' => $r['catatan_admin'] ?? '',
             'waktu' => date('c', strtotime($r['dibuat_pada'])),
             'karya' => $r['karya_judul'] !== null ? ['judul' => $r['karya_judul'], 'waktu' => $r['dikirim_pada']] : null,

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unggah Karya | Kementerian Hak Asasi Manusia</title>
 <link rel="stylesheet" href="../css/unggah-komik.css">
+<link rel="stylesheet" href="../css/mobile.css">
 <script src="../js/kemenham.js"></script>
 </head>
 <body>
@@ -22,12 +23,12 @@
 
 <main class="wrap">
   <div class="head">
-    <a class="back" href="home.html">
+    <a class="back" href="daftar-komik.html">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
-      Kembali ke beranda
+      Kembali ke data pendaftaran
     </a>
     <h1 id="judul-halaman">Unggah Karya</h1>
-    <p>Unggah karya dan dokumen pendukungmu di sini. Kalau karyamu belum siap, kamu bisa kembali ke beranda dan mengunggahnya nanti.</p>
+    <p>Unggah karya dan lembar pernyataan keaslian di sini. Kalau karyamu belum siap, kamu bisa kembali ke beranda dan mengunggahnya nanti.</p>
   </div>
 
   <div class="layout">
@@ -60,13 +61,6 @@
 
       <div class="group">
         <h3 class="sec">Dokumen pendukung</h3>
-
-        <div class="field" data-f="kartu">
-          <label class="lbl" for="kartu" id="lbl-kartu">Scan Kartu Tanda Mahasiswa (KTM)</label>
-          <input type="file" id="kartu" name="kartu" accept=".pdf,.jpg,.jpeg,.png">
-          <span class="hint">PDF, JPG, atau PNG, maksimal 10 MB. Kalau berkelompok, cukup kartu perwakilan.</span>
-          <span class="err"></span>
-        </div>
 
         <div class="field" data-f="pernyataan">
           <label class="lbl" for="pernyataan">Lembar pernyataan keaslian karya</label>
@@ -102,7 +96,7 @@
       <h2 id="side-judul">Tahapan</h2>
       <ol>
         <li><b>Daftar.</b> Isi data dirimu.</li>
-        <li class="now"><b>Kumpulkan karya.</b> Unggah karya dan dokumen pendukung di halaman ini.</li>
+        <li class="now"><b>Kumpulkan karya.</b> Unggah karya dan lembar pernyataan keaslian di halaman ini.</li>
       </ol>
       <h2 style="margin-top:22px">Cek sebelum mengirim</h2>
       <ul id="aturan"></ul>
@@ -116,7 +110,7 @@
     <div class="f-grid">
       <div class="f-brand">
         <a class="brand" href="https://kemenham.go.id" target="_blank" rel="noopener noreferrer">
-          <span class="logo-img" aria-hidden="true"></span>
+          <img class="brand-logo" src="../foo/logo/logo-kemenham.png" alt="Logo Kementerian Hak Asasi Manusia">
           Kementerian Hak Asasi Manusia
         </a>
         <small>Republik Indonesia</small>

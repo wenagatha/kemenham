@@ -1,0 +1,7 @@
+# Batas unggah untuk endpoint API (kode mengizinkan PDF/Word sampai 100 MB, total sampai ~220 MB)
+<IfModule mod_php.c>
+  php_value upload_max_filesize 120M
+  php_value post_max_size 250M
+  php_value max_execution_time 300
+  php_value max_input_time 300
+</IfModule>

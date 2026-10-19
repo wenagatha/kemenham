@@ -58,7 +58,6 @@ if ($aksi === 'masuk') {
     $u = $koneksi->execute_query("SELECT id, nama_depan, nama_belakang, password_hash FROM pengguna WHERE email=? AND role='peserta'", [$email])->fetch_assoc();
     if (!$u || !password_verify((string)($d['password'] ?? ''), $u['password_hash']))
         galat('Email atau kata sandi salah.', 401);
-    buat_notifikasi($koneksi, (int)$u['id'], null, 'Selamat datang kembali, ' . trim($u['nama_depan'] . ' ' . ($u['nama_belakang'] ?? '')) . '! Kamu berhasil masuk ke akun.');
     session_regenerate_id(true);
     $_SESSION['uid'] = (int)$u['id'];
     keluar_json(['ok' => true, 'data' => data_pengguna($koneksi, (int)$u['id'])]);

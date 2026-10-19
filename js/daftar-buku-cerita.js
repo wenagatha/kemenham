@@ -4,6 +4,8 @@ const DEADLINE = new Date('2026-11-04T23:59:00+07:00');
     'buku-cerita': {
       judul: 'Daftar Lomba Buku Cerita HAM',
       nomor: 'NIM', asal: 'Asal perguruan tinggi', status: 'mahasiswa aktif perguruan tinggi',
+      nomorHint: 'Untuk peserta kelompok, cukup isi NIM perwakilan.',
+      kartu: 'Scan Kartu Tanda Mahasiswa (KTM)',
       aturan: [
         'Peserta: mahasiswa aktif perguruan tinggi di Daerah Khusus Jakarta.',
         'Individu atau kelompok (maksimal 3 orang), 1 karya per peserta.',
@@ -15,6 +17,8 @@ const DEADLINE = new Date('2026-11-04T23:59:00+07:00');
     'komik': {
       judul: 'Daftar Lomba Serial Komik Bergambar',
       nomor: 'NIS', asal: 'Asal sekolah', status: 'pelajar aktif SLTA sederajat',
+      nomorHint: 'Untuk peserta kelompok, cukup isi NIS perwakilan.',
+      kartu: 'Scan Kartu Pelajar',
       aturan: [
         'Peserta: pelajar aktif SLTA sederajat di Daerah Khusus Jakarta.',
         'Individu atau kelompok (maksimal 3 orang), 1 karya per peserta.',
@@ -32,11 +36,15 @@ const DEADLINE = new Date('2026-11-04T23:59:00+07:00');
   document.querySelectorAll('[data-home]').forEach(a => a.href = HOME_URL);
   const kategori = 'buku-cerita'; // 'buku-cerita' atau 'komik'
   const c = KAT[kategori];
+  let pendaftaranAda = null;
+  let kartuTersimpan = false;
   form.kategori.value = kategori;
   document.title = c.judul + ' | Kementerian Hak Asasi Manusia';
   $('#judul-halaman').textContent = c.judul;
   $('#lbl-nomor').textContent = c.nomor;
   $('#lbl-asal').textContent = c.asal;
+  $('#hint-nomor').textContent = c.nomorHint;
+  $('#lbl-kartu').textContent = c.kartu;
   $('#status-peserta').textContent = c.status;
   $('#aturan').innerHTML = c.aturan.map(t => `<li>${t}</li>`).join('');
 
@@ -60,11 +68,27 @@ const DEADLINE = new Date('2026-11-04T23:59:00+07:00');
     tandai($('[data-f=asal]'), teks('asal') ? '' : true);
     tandai($('[data-f=email]'), /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(teks('email')) ? '' : true);
     tandai($('[data-f=wa]'), /^(\+62|62|0)8[0-9]{7,12}$/.test(teks('wa').replace(/[\s-]/g, '')) ? '' : true);
+    tandai($('[data-f=kartu]'), cekKartu());
     tandai($('[data-f=setuju]'), form.setuju.checked ? '' : true);
 
     if (pertama) pertama.querySelector('input').focus();
     return ok;
   }
+
+  function cekKartu() {
+    const file = form.kartu.files[0];
+    if (!file) return kartuTersimpan ? '' : 'Pilih file kartu peserta perwakilan.';
+    const ekstensi = file.name.split('.').pop().toLowerCase();
+    if (!['pdf', 'jpg', 'jpeg', 'png'].includes(ekstensi)) return 'Format file harus PDF, JPG, atau PNG.';
+    if (file.size > 10 * 1024 * 1024) return 'Ukuran file melebihi 10 MB.';
+    return '';
+  }
+
+  form.kartu.addEventListener('change', () => {
+    setErr($('[data-f=kartu]'), form.kartu.files.length ? cekKartu() : '');
+    if (!form.kartu.files.length && kartuTersimpan) $('#hint-kartu').textContent = 'Kartu saat ini tetap tersimpan. Pilih file hanya jika ingin menggantinya.';
+    else $('#hint-kartu').textContent = 'PDF, JPG, atau PNG, maksimal 10 MB. Kalau berkelompok, cukup kartu perwakilan.';
+  });
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
@@ -75,9 +99,7 @@ const DEADLINE = new Date('2026-11-04T23:59:00+07:00');
       st.classList.add('on');
       return;
     }
-    // TODO: kirim data ke backend (PHP) di sini, mis. fetch('simpan.php', { method:'POST', body:new FormData(form) })
-    // Batas waktu juga harus dicek di server, bukan hanya di sini.
-    if (new Date() > DEADLINE) {
+    if (!pendaftaranAda && new Date() > DEADLINE) {
       st.textContent = 'Pendaftaran sudah ditutup (batas 4 November 2026, 23.59 WIB).';
       st.classList.add('on');
       return;
@@ -95,16 +117,21 @@ const DEADLINE = new Date('2026-11-04T23:59:00+07:00');
       });
       return;
     }
+    const submit = form.querySelector('.submit');
+    submit.disabled = true;
+    st.textContent = pendaftaranAda ? 'Sedang menyimpan perubahan pendaftaran...' : 'Sedang mengirim pendaftaran dan kartu peserta...';
+    st.classList.add('on');
     try {
-      await KH.tambahDaftar({
-        kategori, peserta: form.nama.value.trim(), tim: form.tim.value === 'kelompok' ? 'Kelompok' : 'Individu',
-        anggota2: form.anggota2.value.trim(), anggota3: form.anggota3.value.trim(),
-        nomor: form.nomor.value.trim(), asal: form.asal.value.trim(), email: form.email.value.trim(), wa: form.wa.value.trim()
-      });
-      location.href = 'unggah-' + kategori + '.html?registered=1';
+      const data = new FormData(form);
+      data.set('peserta', form.nama.value.trim());
+      data.set('tim', form.tim.value === 'kelompok' ? 'Kelompok' : 'Individu');
+      await KH.tambahDaftar(data);
+      location.href = 'unggah-' + kategori + '.html' + (pendaftaranAda ? '' : '?registered=1');
     } catch (error) {
       st.textContent = error.message;
       st.classList.add('on');
+    } finally {
+      submit.disabled = false;
     }
   });
 
@@ -119,15 +146,41 @@ const DEADLINE = new Date('2026-11-04T23:59:00+07:00');
     const sudah = KH.daftar(kategori);
     const lain = Object.keys(KH.lomba).find(k => k !== kategori && KH.daftar(k));
     if (sudah) {
-      const tahap = sudah.tahap;
-      KH.tampilkan(form, {
-        judul: 'Kamu sudah terdaftar',
-        teks: tahap === 'terbuka' ? 'Pendaftaranmu di lomba ini sudah tercatat. Kamu bisa mengunggah karya kapan saja.'
-            : tahap === 'terkirim' ? 'Pendaftaranmu sudah tercatat dan karyamu sudah terkirim.'
-            : 'Pendaftaranmu sudah tercatat. Panitia akan mengirim notifikasi saat pengumpulan karya dibuka.',
-        tombol: (tahap === 'terbuka' ? [{ label: 'Unggah karya', href: 'unggah-' + kategori + '.html', kuning: true }]
-              : [{ label: 'Lihat status di profil', href: 'profil.html#upload', kuning: true }]).concat([{ label: 'Kembali ke beranda', href: 'home.html' }])
-      });
+      if (sudah.karya) {
+        KH.tampilkan(form, {
+          judul: sudah.tahap === 'terkirim' ? 'Karyamu sudah dikirim' : 'Pendaftaran tidak bisa diubah',
+          teks: sudah.tahap === 'terkirim'
+            ? 'Data pendaftaran sudah dikunci setelah karya dikirim.'
+            : 'Karyamu sudah dikirim dan perlu diperbaiki. Data pendaftaran sudah dikunci.',
+          tombol: (sudah.tahap === 'terkirim'
+            ? [{ label: 'Lihat status di profil', href: 'profil.html#upload', kuning: true }]
+            : [{ label: 'Perbaiki karya', href: 'unggah-' + kategori + '.html', kuning: true }])
+            .concat([{ label: 'Kembali ke beranda', href: 'home.html' }])
+        });
+      } else {
+        pendaftaranAda = sudah;
+        kartuTersimpan = !!sudah.kartu;
+        $('#judul-halaman').textContent = 'Periksa atau edit data pendaftaran';
+        form.nama.value = sudah.peserta;
+        form.tim.value = sudah.tim.toLowerCase();
+        form.anggota2.value = sudah.anggota2 || '';
+        form.anggota3.value = sudah.anggota3 || '';
+        form.nomor.value = sudah.nomor;
+        form.asal.value = sudah.asal;
+        form.email.value = sudah.email;
+        form.wa.value = sudah.wa;
+        form.setuju.checked = true;
+        $('#members').classList.toggle('on', form.tim.value === 'kelompok');
+        $('#hint-kartu').textContent = kartuTersimpan
+          ? 'Kartu saat ini sudah tersimpan. Pilih file hanya jika ingin menggantinya.'
+          : 'Kartu perwakilan belum tersimpan. PDF, JPG, atau PNG, maksimal 10 MB.';
+        form.querySelector('.submit').textContent = 'Simpan perubahan dan lanjutkan';
+        const st = $('#status');
+        st.textContent = sudah.tahap === 'menunggu'
+          ? 'Data pendaftaranmu sudah terisi. Kamu bisa memperbaikinya di bawah ini; pengumpulan karya belum dibuka.'
+          : 'Data pendaftaranmu sudah terisi. Perbaiki bagian yang keliru, lalu simpan sebelum mengunggah karya.';
+        st.classList.add('on');
+      }
     } else if (KH.cfg.HANYA_SATU_LOMBA && lain) {
       KH.tampilkan(form, {
         judul: 'Kamu sudah memilih lomba lain',

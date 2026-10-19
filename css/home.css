@@ -57,20 +57,23 @@
 
   /* ---------- Dua ponsel ---------- */
   .hero > * { min-width: 0; }
-  .phones { display: flex; flex-direction: row-reverse; justify-content: center; align-items: flex-start; gap: 28px; width: 512px; margin-inline: auto; }
+  .phones { display: flex; flex-direction: row-reverse; justify-content: center; align-items: center; gap: 28px; width: 512px; margin-inline: auto; }
   .phone {
     position: relative; flex: none; width: 214px; height: 390px; padding: 18px 14px;
     border: 3px solid var(--ink); border-radius: 30px; background: #fff; overflow: hidden;
     box-shadow: 0 18px 36px #14213d33;
   }
-  .phone.front { margin-top: 40px; }
+  .phone.front { height: auto; min-height: 270px; }
+  .phone.front { z-index: 2; overflow: visible; }
   .phone.back { width: 270px; height: 410px; background: var(--blue); color: #fff; }
   .ph-title { font-size: 22px; font-weight: 700; margin-bottom: 12px; }
-  .pitem { padding: 12px; margin-bottom: 10px; border: 1.5px solid var(--blue); border-radius: 12px; background: var(--paper); }
+  .pitem { position: relative; display: block; padding: 12px; margin-bottom: 10px; border: 1.5px solid var(--blue); border-radius: 12px; background: var(--paper); transition: background-color .15s, transform .15s, box-shadow .15s; }
+  .phone.front .pitem:last-child { margin-bottom: 0; }
+  .pitem:hover, .pitem:focus-visible { background: var(--yellow); transform: translateY(-2px); box-shadow: 0 4px 0 var(--yellow-deep); }
   .pitem b { display: block; font-size: 14px; }
   .pitem small { color: var(--muted); font-size: 12px; }
-  .pitem.alt { background: var(--yellow); border-color: var(--ink); }
-  .phone .btn { display: block; text-align: center; margin-top: 14px; padding: 10px; font-size: 13px; }
+  .pitem-tip { position: absolute; z-index: 4; top: 50%; left: calc(100% + 12px); display: none; width: 290px; padding: 12px 14px; color: var(--ink); background: var(--blue-soft); border: 2px solid var(--blue); border-radius: 12px; box-shadow: 5px 5px 0 var(--yellow); font-size: 12px; font-weight: 500; line-height: 1.5; transform: translateY(-50%); pointer-events: none; }
+  .pitem:hover .pitem-tip, .pitem:focus-visible .pitem-tip { display: block; }
 
   .car { position: relative; aspect-ratio: 1 / 1; border-radius: 14px; overflow: hidden; border: 2px solid #fff; background: var(--blue-soft); }
   .track { display: flex; height: 100%; transition: transform .5s ease; }
@@ -101,6 +104,10 @@
   .tag { font-size: 13px; font-weight: 700; color: var(--blue); }
   .card h3 { font-size: 24px; letter-spacing: -.01em; }
   .card p { color: var(--muted); font-size: 14px; }
+  .card-details { display: grid; gap: 14px; }
+  .card-details h4 { margin-bottom: 4px; font-size: 14px; }
+  .card-details p, .card-details li { color: var(--muted); font-size: 13px; }
+  .card-details ul { display: grid; gap: 5px; margin: 0; padding-left: 18px; }
   .foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; margin-top: auto; padding-top: 18px; }
   .art { width: 130px; flex: none; }
 
@@ -108,6 +115,7 @@
   footer { margin-top: 96px; background: var(--ink); color: #e8efff; font-size: 14px; }
   .f-grid { display: grid; grid-template-columns: 1.7fr 1fr 1fr 1fr; gap: 32px; align-items: start; padding: 56px 0 40px; text-align: center; }
   .f-brand .brand { justify-content: center; color: #fff; font-size: 17px; }
+  .f-brand .brand-logo { width: 34px; height: 34px; object-fit: contain; flex: none; }
   .f-brand small { display: block; margin-top: 4px; font-size: 12px; font-weight: 600; color: var(--yellow); }
   .f-brand p { margin-top: 14px; color: #c9d4ee; }
   .f-brand p + p { margin-top: 10px; }

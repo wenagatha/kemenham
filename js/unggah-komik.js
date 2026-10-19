@@ -1,7 +1,7 @@
 const KAT = {
     'buku-cerita': {
       judul: 'Unggah Karya Buku Cerita HAM',
-      kartu: 'Scan Kartu Tanda Mahasiswa (KTM)', word: true,
+      word: true,
       aturan: [
         'Buku memuat 10 sampai 20 cerita, tiap cerita 2.000 sampai 3.000 karakter termasuk spasi.',
         'Wajib ada sampul, daftar isi, dan nomor halaman.',
@@ -10,7 +10,7 @@ const KAT = {
     },
     'komik': {
       judul: 'Unggah Karya Serial Komik Bergambar',
-      kartu: 'Scan Kartu Pelajar', word: false,
+      word: false,
       aturan: [
         'Serial memuat 5 sampai 10 cerita yang berkelanjutan.',
         'Wajib ada sampul dan nomor halaman. Tanpa unsur SARA dan pornografi.',
@@ -31,7 +31,6 @@ const KAT = {
   form.kategori.value = kategori;
   document.title = c.judul + ' | Kementerian Hak Asasi Manusia';
   $('#judul-halaman').textContent = c.judul;
-  $('#lbl-kartu').textContent = c.kartu;
   $('#aturan').innerHTML = c.aturan.map(t => `<li>${t}</li>`).join('');
   $('#f-word').hidden = !c.word;
   $('[data-template]').href = TEMPLATE_URL;
@@ -42,7 +41,6 @@ const KAT = {
   const FILE = {
     pdf:        { ext: ['pdf'], max: 100, label: 'PDF', kosong: 'Pilih file PDF karyamu.' },
     word:       { ext: ['doc', 'docx'], max: 100, label: 'DOC atau DOCX', kosong: 'Pilih file Word karyamu.' },
-    kartu:      { ext: ['pdf', 'jpg', 'jpeg', 'png'], max: 10, label: 'PDF, JPG, atau PNG', kosong: 'Pilih file scan kartumu.' },
     pernyataan: { ext: ['pdf', 'jpg', 'jpeg', 'png'], max: 10, label: 'PDF, JPG, atau PNG', kosong: 'Pilih file lembar pernyataan yang sudah ditandatangani.' }
   };
 

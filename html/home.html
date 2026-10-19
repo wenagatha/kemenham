@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Perayaan HAM | Kementerian Hak Asasi Manusia</title>
 <link rel="stylesheet" href="../css/home.css">
+<link rel="stylesheet" href="../css/mobile.css">
 <script src="../js/kemenham.js"></script>
 </head>
 <body>
@@ -34,7 +35,7 @@
 
     <div class="pcell"><div class="phones" id="phones">
       <div class="phone back">
-        <div class="ph-title">Kegiatan</div>
+        <div class="ph-title"></div>
         <div class="car" id="car"><div class="track" id="track"></div></div>
         <div class="ctrl">
           <button type="button" class="arrow" id="prev" aria-label="Foto sebelumnya"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M15 5l-7 7 7 7"/></svg></button>
@@ -44,10 +45,14 @@
       </div>
       <div class="phone front">
         <div class="ph-title">Lomba</div>
-        <div class="pitem"><b>Buku Cerita</b><small>Untuk mahasiswa</small></div>
-        <div class="pitem alt"><b>Komik</b><small>Untuk siswa</small></div>
-        <div class="pitem"><b>Notifikasi</b><small>Kabar pendaftaranmu</small></div>
-        <a class="btn" href="#lomba" id="phone-btn">Pilih lomba</a>
+        <a class="pitem" href="#buku-cerita" aria-describedby="tip-buku-cerita">
+          <b>Buku Cerita</b><small>Untuk mahasiswa</small>
+          <span class="pitem-tip" id="tip-buku-cerita" role="tooltip">Tema: Hak Asasi Manusia untuk Semua. Buku berisi 10–20 cerita HAM. Batas pengumpulan: 4 November 2026, pukul 23.59 WIB.</span>
+        </a>
+        <a class="pitem" href="#komik" aria-describedby="tip-komik">
+          <b>Komik</b><small>Untuk siswa</small>
+          <span class="pitem-tip" id="tip-komik" role="tooltip">Tema: Hak Asasi Manusia untuk Semua. Buat serial komik 5–10 cerita berkelanjutan. Batas pengumpulan: 4 November 2026, pukul 23.59 WIB.</span>
+        </a>
       </div>
     </div></div>
   </div>
@@ -61,21 +66,55 @@
   </section>
 
   <section id="lomba">
-    <h2>Pilih lomba yang cocok untukmu</h2>
+    <h2>Pilih lomba sesuai kategori</h2>
     <div class="cards">
-      <article class="card a">
+      <article class="card a" id="buku-cerita">
         <span class="tag">Untuk Mahasiswa</span>
         <h3>Lomba Buku Cerita</h3>
-        <p>Buatlah buku cerita orisinal yang belum pernah dipublikasikan sebelumnya, yang mengangkat pengalaman atau peristiwa berkaitan dengan Hak Asasi Manusia. Karya original dan belum pernah dipublikasikan.</p>
+        <div class="card-details">
+          <div>
+            <h4>Gambaran lomba</h4>
+            <p>Buat buku cerita bertema “Hak Asasi Manusia untuk Semua”. Setiap cerita memiliki alur, konflik, penyelesaian, dan pesan HAM yang jelas.</p>
+          </div>
+          <div>
+            <h4>Batas pengumpulan</h4>
+            <p>4 November 2026, pukul 23.59 WIB.</p>
+          </div>
+          <div>
+            <h4>Persyaratan utama</h4>
+            <ul>
+              <li>Mahasiswa aktif di perguruan tinggi wilayah Daerah Khusus Jakarta; individu atau kelompok maksimal 3 orang.</li>
+              <li>10–20 cerita, masing-masing 2.000–3.000 karakter termasuk spasi.</li>
+              <li>PDF ukuran A5 dengan sampul dan daftar isi. Karya harus orisinal, belum pernah dipublikasikan, bukan murni hasil AI, dan disertai surat pernyataan keaslian.</li>
+            </ul>
+          </div>
+        </div>
         <div class="foot">
           <a class="btn yellow" href="daftar-buku-cerita.html" data-lomba="buku-cerita">Daftar Lomba Buku Cerita</a>
           <svg class="art" viewBox="0 0 140 100" aria-hidden="true"><circle cx="100" cy="42" r="34" fill="#facc15" stroke="#14213d" stroke-width="2.500"/><g transform="rotate(-8 61 58)"><rect x="30" y="30" width="62" height="56" rx="6" fill="#1d4ed8" stroke="#14213d" stroke-width="2.500"/><path d="M44 50h32M44 62h22" stroke="#fff" stroke-width="3.500" stroke-linecap="round"/></g></svg>
         </div>
       </article>
-      <article class="card b">
+      <article class="card b" id="komik">
         <span class="tag">Untuk Siswa</span>
         <h3>Lomba Komik</h3>
-        <p>Buatlah komik strip original yang menarik, mudah dipahami, dan menyampaikan pesan kuat tentang pentingnya menghormati Hak Asasi Manusia dan mewujudkan kesetaraan di lingkungan sekitar. Teknik pembuatan bebas baik tangan maupun menggunakan media digital.</p>
+        <div class="card-details">
+          <div>
+            <h4>Gambaran lomba</h4>
+            <p>Buat serial komik bertema “Hak Asasi Manusia untuk Semua” yang menyampaikan pesan HAM lewat gambar, ekspresi, dialog, dan narasi.</p>
+          </div>
+          <div>
+            <h4>Batas pengumpulan</h4>
+            <p>4 November 2026, pukul 23.59 WIB.</p>
+          </div>
+          <div>
+            <h4>Persyaratan utama</h4>
+            <ul>
+              <li>Pelajar aktif SLTA sederajat di Daerah Khusus Jakarta; individu atau kelompok maksimal 3 orang.</li>
+              <li>5–10 cerita yang berkelanjutan; boleh dibuat secara digital atau digambar lalu dipindai.</li>
+              <li>PDF ukuran A5 dengan sampul dan nomor halaman. Karya harus orisinal, bukan murni hasil AI, disertai surat pernyataan keaslian, dan tidak mengandung SARA atau pornografi.</li>
+            </ul>
+          </div>
+        </div>
         <div class="foot">
           <a class="btn yellow" href="daftar-komik.html" data-lomba="komik">Daftar Lomba Komik</a>
           <svg class="art" viewBox="0 0 140 100" aria-hidden="true"><circle cx="30" cy="30" r="22" fill="#1d4ed8" stroke="#14213d" stroke-width="2.500"/><path d="M46 78l-8 16 26-16z" fill="#facc15" stroke="#14213d" stroke-width="2.500" stroke-linejoin="round"/><rect x="34" y="28" width="92" height="56" rx="14" fill="#facc15" stroke="#14213d" stroke-width="2.500"/><g fill="#14213d"><circle cx="64" cy="56" r="5"/><circle cx="80" cy="56" r="5"/><circle cx="96" cy="56" r="5"/></g></svg>
@@ -91,7 +130,7 @@
     <div class="f-grid">
       <div class="f-brand">
         <a class="brand" href="https://kemenham.go.id" target="_blank" rel="noopener noreferrer">
-          <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="#1d4ed8" stroke="#fff" stroke-width="2"/><path d="M6 20c3 6 14 8 19-1" fill="none" stroke="#facc15" stroke-width="4" stroke-linecap="round"/></svg>
+          <img class="brand-logo" src="../foo/logo/logo-kemenham.png" alt="Logo Kementerian Hak Asasi Manusia">
           Kementerian Hak Asasi Manusia
         </a>
         <small>Republik Indonesia</small>

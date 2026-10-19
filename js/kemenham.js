@@ -34,8 +34,8 @@
       res = await fetch(API + url, {
         method: 'POST',
         credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body || {})
+        headers: body instanceof FormData ? {} : { 'Content-Type': 'application/json' },
+        body: body instanceof FormData ? body : JSON.stringify(body || {})
       });
     } catch (error) {
       throw new Error('Tidak bisa terhubung ke server. Pastikan Apache dan MySQL di XAMPP sudah menyala.');

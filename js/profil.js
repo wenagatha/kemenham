@@ -76,9 +76,11 @@
     el.innerHTML = DAFTAR.map((d, i) => {
       const aksi = d.tahap === 'terkirim'
         ? `<div class="notice">Karya ${d.karya ? '“' + esc(d.karya.judul) + '” ' : ''}sudah diunggah dan tercatat di sistem.</div>`
-        : d.tahap === 'terbuka'
-          ? `<div class="notice">Pengumpulan karya sudah dibuka.<br><a class="btn" href="unggah-${esc(d.kategori)}.html">Unggah karya →</a></div>`
-          : `<div class="notice">Karya belum bisa diunggah. Panitia akan mengirim notifikasi saat pengumpulan karya dibuka.<br><button class="btn" type="button" disabled>Unggah karya →</button></div>`;
+        : d.karya
+          ? `<div class="notice">Karya perlu diperbaiki.<br><a class="btn" href="unggah-${esc(d.kategori)}.html">Perbaiki karya →</a></div>`
+          : d.tahap === 'terbuka'
+            ? `<div class="notice">Pendaftaranmu belum lengkap.<br><a class="btn" href="daftar-${esc(d.kategori)}.html">Lanjutkan pendaftaran →</a></div>`
+            : `<div class="notice">Pendaftaranmu belum lengkap. Panitia akan mengirim notifikasi saat pengumpulan karya dibuka.<br><a class="btn" href="daftar-${esc(d.kategori)}.html">Lanjutkan pendaftaran →</a></div>`;
       return `<article class="reg">
         <h3>${esc(d.lomba)}</h3>
         <div class="side"><span class="badge">${esc(d.status)}</span>${d.tahap === 'terkirim' ? '' : `<button class="del" type="button" data-i="${i}">Hapus</button>`}</div>

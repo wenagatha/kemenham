@@ -73,22 +73,14 @@
       a.href = 'daftar-' + k + '.html';
       a.textContent = 'Daftar Lomba ' + nama[k];
       if (d) {
-        if (d.tahap === 'terbuka') { a.textContent = 'Unggah Karya ' + nama[k]; a.href = 'unggah-' + k + '.html'; }
-        else if (d.tahap === 'terkirim') { a.textContent = 'Karya Terkirim'; a.href = 'profil.html#upload'; }
-        else { a.textContent = 'Menunggu Pengumpulan Karya'; a.href = 'profil.html#upload'; }
+        if (d.tahap === 'terkirim') { a.textContent = 'Karya Terkirim'; a.href = 'profil.html#upload'; }
+        else if (d.karya) { a.textContent = 'Perbaiki Karya ' + nama[k]; a.href = 'unggah-' + k + '.html'; }
+        else { a.textContent = 'Lanjutkan pendaftaran'; a.href = 'daftar-' + k + '.html'; }
       } else if (user && KH.cfg.HANYA_SATU_LOMBA && pilih) {
         a.textContent = 'Kamu sudah memilih lomba lain';
         a.classList.add('off'); a.removeAttribute('href'); a.setAttribute('aria-disabled', 'true');
       }
     });
-    const d = pilih && KH.daftar(pilih), pb = document.getElementById('phone-btn');
-    if (d) {
-      pb.textContent = d.tahap === 'terbuka' ? 'Unggah karya' : 'Lihat status';
-      pb.href = d.tahap === 'terbuka' ? 'unggah-' + pilih + '.html' : 'profil.html#upload';
-    } else {
-      pb.textContent = 'Pilih lomba';
-      pb.href = '#lomba';
-    }
   }
   if (window.KH) {
     renderStatusLomba();

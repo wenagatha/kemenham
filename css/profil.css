@@ -13,7 +13,7 @@
   .nav { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:18px 0; }
   .brand { display:flex; align-items:center; gap:10px; font-weight:700; font-size:15px; }
   .nav .brand .brand-logo,
-  .brand-logo { width:130px; height:auto; object-fit:contain; flex:none; display:block; }
+  .brand-logo { width: 58px; height: auto; object-fit: contain; flex: none; display: block; }
   .actions { display:flex; gap:8px; }
   .chip { position:relative; display:inline-flex; align-items:center; gap:6px; padding:8px 14px; font-size:13px; font-weight:600; border:1.5px solid var(--blue); border-radius:999px; background:#fff; color:var(--ink); cursor:pointer; font-family:inherit; }
   .chip:hover, .chip.on { background:var(--yellow); }
@@ -93,6 +93,7 @@
   footer { margin-top:96px; background:var(--ink); color:#e8efff; font-size:14px; }
   .f-grid { display:grid; grid-template-columns:1.7fr 1fr 1fr 1fr; gap:32px; align-items:start; padding:56px 0 40px; text-align:center; }
   .f-brand .brand { justify-content:center; color:#fff; font-size:17px; }
+  .f-brand .brand-logo { width:34px; height:34px; object-fit:contain; flex:none; }
   .f-brand small { display:block; margin-top:4px; font-size:12px; font-weight:600; color:var(--yellow); }
   .f-brand p { margin-top:14px; color:#c9d4ee; }
   .f-brand p + p { margin-top:10px; }

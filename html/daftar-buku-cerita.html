@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Daftar Lomba | Kementerian Hak Asasi Manusia</title>
 <link rel="stylesheet" href="../css/daftar-buku-cerita.css">
-<script src="../js/kemenham.js"></script>
+<link rel="stylesheet" href="../css/mobile.css">
+<script src="../js/kemenham.js?v=20261020-registration-edit"></script>
 </head>
 <body>
 
@@ -27,7 +28,7 @@
       Kembali ke beranda
     </a>
     <h1 id="judul-halaman">Daftar Lomba</h1>
-    <p>Isi data dirimu dulu. Setelah terdaftar, kamu akan mendapat notifikasi untuk lanjut ke pengumpulan karya. Pendaftaran 22 Oktober sampai 4 November 2026, pukul 23.59 WIB.</p>
+    <p>Isi data peserta dan kartu perwakilan. Data masih bisa diperbaiki sebelum karya dikirim. Pendaftaran 22 Oktober sampai 4 November 2026, pukul 23.59 WIB.</p>
   </div>
 
   <div class="layout">
@@ -63,6 +64,7 @@
           <div class="field" data-f="nomor">
             <label class="lbl" for="nomor" id="lbl-nomor">NIM</label>
             <input type="text" id="nomor" name="nomor" inputmode="numeric">
+            <span class="hint" id="hint-nomor"></span>
             <span class="err">Nomor induk wajib diisi.</span>
           </div>
           <div class="field" data-f="asal">
@@ -84,6 +86,13 @@
             <span class="hint">Panitia akan menghubungi nomor ini.</span>
             <span class="err">Masukkan nomor WhatsApp yang valid.</span>
           </div>
+        </div>
+
+        <div class="field" data-f="kartu">
+          <label class="lbl" for="kartu" id="lbl-kartu">Scan Kartu Tanda Mahasiswa (KTM)</label>
+          <input type="file" id="kartu" name="kartu" accept=".pdf,.jpg,.jpeg,.png">
+          <span class="hint" id="hint-kartu">PDF, JPG, atau PNG, maksimal 10 MB. Kalau berkelompok, cukup kartu perwakilan.</span>
+          <span class="err"></span>
         </div>
       </div>
 
@@ -109,7 +118,7 @@
     <aside class="box side" aria-labelledby="side-judul">
       <h2 id="side-judul">Tahapan</h2>
       <ol>
-        <li><b>Daftar.</b> Isi formulir ini.</li>
+        <li><b>Daftar.</b> Isi data peserta dan unggah kartu perwakilan.</li>
         <li><b>Kumpulkan karya.</b> Panitia mengirim notifikasi setelah pendaftaranmu diterima.</li>
       </ol>
       <h2 style="margin-top:22px">Syarat singkat</h2>
@@ -124,7 +133,7 @@
     <div class="f-grid">
       <div class="f-brand">
         <a class="brand" href="https://kemenham.go.id" target="_blank" rel="noopener noreferrer">
-          <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="#1d4ed8" stroke="#fff" stroke-width="2"/><path d="M6 20c3 6 14 8 19-1" fill="none" stroke="#facc15" stroke-width="4" stroke-linecap="round"/></svg>
+          <img class="brand-logo" src="../foo/logo/logo-kemenham.png" alt="Logo Kementerian Hak Asasi Manusia">
           Kementerian Hak Asasi Manusia
         </a>
         <small>Republik Indonesia</small>
@@ -157,6 +166,6 @@
   <div class="f-bottom">© 2026 Kementerian Hak Asasi Manusia Republik Indonesia. Hak cipta dilindungi.</div>
 </footer>
 
-<script src="../js/daftar-buku-cerita.js"></script>
+<script src="../js/daftar-buku-cerita.js?v=20261020-registration-edit"></script>
 </body>
 </html>
