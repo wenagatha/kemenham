@@ -147,3 +147,4 @@
   }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
   .auth-err { color:#b91c1c; font-size:13px; font-weight:600; }
+  .auth-err.success { padding:10px 12px; color:#166534; background:#f0fdf4; border:1px solid #86efac; border-radius:8px; }

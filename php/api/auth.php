@@ -48,9 +48,7 @@ if ($aksi === 'daftar') {
         $koneksi->rollback();
         throw $error;
     }
-    session_regenerate_id(true);
-    $_SESSION['uid'] = $uid;
-    keluar_json(['ok' => true, 'data' => data_pengguna($koneksi, $_SESSION['uid'])]);
+    keluar_json(['ok' => true]);
 }
 
 if ($aksi === 'masuk') {

@@ -184,8 +184,7 @@
 
   async function signup(data) {
     try {
-      state.user = await kirim('auth.php?aksi=daftar', data);
-      notify();
+      await kirim('auth.php?aksi=daftar', data);
       return '';
     } catch (error) { return error.message; }
   }

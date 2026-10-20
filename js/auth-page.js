@@ -15,6 +15,17 @@ const card = document.getElementById('card');
     b.addEventListener('click', () => setMode(b.dataset.go)));
   // buka halaman login langsung: auth-page.html#login
 
+  const params = new URLSearchParams(location.search);
+  if (params.get('registered') === '1' && card.dataset.mode === 'login') {
+    const info = document.getElementById('auth-err');
+    info.textContent = 'Akun berhasil dibuat. Silakan masuk dengan email dan kata sandi yang kamu daftarkan.';
+    info.classList.add('success');
+    info.hidden = false;
+    params.delete('registered');
+    const query = params.toString();
+    history.replaceState(null, '', location.pathname + (query ? '?' + query : '') + location.hash);
+  }
+
   document.getElementById('eye').addEventListener('click', () => {
     pw.type = pw.type === 'password' ? 'text' : 'password';
   });
@@ -107,6 +118,7 @@ const card = document.getElementById('card');
       const f = e.target, v = n => f[n].value.trim();
       const salah = m => { errEl.textContent = m; errEl.hidden = false; };
       errEl.hidden = true;
+      errEl.classList.remove('success');
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v('email'))) return salah('Masukkan alamat email yang valid.');
       if (!f.password.value) return salah('Kata sandi wajib diisi.');
       if (card.dataset.mode === 'signup' && f.password.value.length < 8) return salah('Kata sandi minimal 8 karakter.');
@@ -116,6 +128,13 @@ const card = document.getElementById('card');
         if (!f.gender.value || !f.birth_date.value) return salah('Lengkapi jenis kelamin dan tanggal lahir.');
         pesan = await KH.signup({ password: f.password.value, first_name: v('first_name'), last_name: v('last_name'), email: v('email'), phone: v('phone'),
           gender: f.gender.value, birth_place: v('birth_place'), birth_date: f.birth_date.value, address: v('address') });
+        if (pesan) return salah(pesan);
+        const login = new URL('auth-page.html', location.href);
+        login.searchParams.set('next', tujuan);
+        login.searchParams.set('registered', '1');
+        login.hash = 'login';
+        location.href = login.href;
+        return;
       } else {
         pesan = await KH.login(v('email'), f.password.value);
       }

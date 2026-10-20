@@ -55,7 +55,8 @@ function data_pengguna(mysqli $db, int $uid): ?array {
 
     $daftar = [];
     $rows = $db->execute_query(
-        "SELECT p.*, l.kode, l.nama AS lomba, k.judul AS karya_judul, k.file_kartu AS karya_file_kartu, k.dikirim_pada
+        "SELECT p.*, l.kode, l.nama AS lomba, k.judul AS karya_judul, k.file_kartu AS karya_file_kartu, k.dikirim_pada,
+                k.file_pdf, k.file_word, k.file_pernyataan
          FROM pendaftaran p
          JOIN lomba l ON l.id = p.lomba_id
          LEFT JOIN karya k ON k.pendaftaran_id = p.id
@@ -70,7 +71,11 @@ function data_pengguna(mysqli $db, int $uid): ?array {
             'kartu' => !empty($r['file_kartu']) || !empty($r['karya_file_kartu']),
             'status' => $r['status'], 'tahap' => $r['tahap'], 'catatan' => $r['catatan_admin'] ?? '',
             'waktu' => date('c', strtotime($r['dibuat_pada'])),
-            'karya' => $r['karya_judul'] !== null ? ['judul' => $r['karya_judul'], 'waktu' => $r['dikirim_pada']] : null,
+            'karya' => $r['karya_judul'] !== null ? [
+                'judul' => $r['karya_judul'],
+                'waktu' => $r['dikirim_pada'] ? date('c', strtotime($r['dikirim_pada'])) : '',
+                'berkas' => ['pdf' => !empty($r['file_pdf']), 'word' => !empty($r['file_word']), 'pernyataan' => !empty($r['file_pernyataan'])],
+            ] : null,
         ];
     }
 
