@@ -48,10 +48,17 @@
   }
   .phone.front { min-height: 0; padding: 16px 14px; order: -1; }
   .phone.back { padding: 14px; }
-  .phone .car { aspect-ratio: 1.15 / 1; }
+  .phone .car { aspect-ratio: 3 / 4; }
   .pitem-tip { left: 50%; top: calc(100% + 8px); width: min(290px, calc(100vw - 56px)); transform: translateX(-50%); }
   section { padding-top: 60px; }
   .split { grid-template-columns: 1fr; gap: 18px; }
+  .event-info { gap: 20px; }
+  .theme-main, .theme-subtopics, .timeline { padding: 20px 16px; border-radius: 18px; }
+  .theme-main h3 { font-size: 30px; }
+  .timeline-list { grid-template-columns: 1fr; gap: 12px; }
+  .timeline-list li { grid-template-columns: 32px 1fr; gap: 4px 12px; padding: 14px; }
+  .timeline-list .timeline-step { grid-row: span 3; }
+  .timeline-list li > div { display: grid; gap: 4px; }
   .cards { grid-template-columns: 1fr; gap: 20px; margin-top: 24px; }
   .card { padding: 22px 18px; border-radius: 18px; }
   .card h3 { font-size: 22px; }

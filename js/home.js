@@ -1,24 +1,32 @@
 /* ===== Slider foto kegiatan ===== */
   const SLIDES = [
-    // 'foto-1.jpg',
-    // 'foto-2.jpg',
-    // 'foto-3.jpg',
-    // 'foto-4.jpg',
-    // 'foto-5.jpg',
+    {
+      src: '../foo/asse/lomba-serial-komik-ham-portrait.jpg',
+      alt: 'Ilustrasi ajakan mengikuti lomba serial komik HAM',
+      title: 'LOMBA SERIAL KOMIK HAM',
+    },
+    {
+      src: '../foo/asse/lomba-buku-cerita-ham-portrait.jpg',
+      alt: 'Ilustrasi ajakan mengikuti lomba buku cerita HAM',
+      title: 'LOMBA BUKU CERITA HAM',
+    },
   ];
   const AUTOPLAY = true;   // false = hanya manual
   const INTERVAL = 3500;   // ms
 
   const track = document.getElementById('track');
   const dotsEl = document.getElementById('dots');
-  const items = SLIDES.length ? SLIDES : [null, null, null, null, null];
+  const caption = document.getElementById('slide-caption');
+  const items = SLIDES;
   let index = 0, timer = null;
 
-  items.forEach((src, i) => {
+  items.forEach((item, i) => {
     const s = document.createElement('div');
-    s.className = 'slide' + (src ? '' : ' ph');
-    if (src) s.style.backgroundImage = `url("${src}")`;
-    else s.innerHTML = `<span>Foto ${i + 1}<br>1080 × 1080 px</span>`;
+    s.className = 'slide';
+    const image = document.createElement('img');
+    image.src = item.src;
+    image.alt = item.alt;
+    s.appendChild(image);
     track.appendChild(s);
 
     const d = document.createElement('button');
@@ -31,6 +39,7 @@
   function go(i) {
     index = (i + items.length) % items.length;
     track.style.transform = `translateX(${-index * 100}%)`;
+    caption.textContent = items[index].title;
     [...dotsEl.children].forEach((d, k) => d.classList.toggle('on', k === index));
   }
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
