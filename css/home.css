@@ -53,6 +53,8 @@
   .btn:hover { background: #1a43b8; }
   .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
   .btn.yellow { background: var(--yellow); color: var(--ink); }
+  .btn.guide { background: #fff; color: var(--blue); }
+  .btn.guide:hover { background: var(--blue-soft); }
   .btn.off { background: var(--blue-soft); color: var(--muted); border-color: var(--line); box-shadow: none; pointer-events: none; }
   .btn.yellow:hover { background: var(--yellow-deep); }
 
@@ -133,6 +135,7 @@
   .card-details p, .card-details li { color: var(--muted); font-size: 13px; }
   .card-details ul { display: grid; gap: 5px; margin: 0; padding-left: 18px; }
   .foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; margin-top: auto; padding-top: 18px; }
+  .foot-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
   .art { width: 130px; flex: none; }
 
 
