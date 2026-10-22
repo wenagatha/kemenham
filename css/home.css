@@ -149,6 +149,7 @@
   .card-details h4 { margin-bottom: 4px; font-size: 14px; }
   .card-details h4.contact-heading { margin-top: 8px; }
   .card-details p, .card-details li { color: var(--muted); font-size: 13px; }
+  .card-details .file-size-limit { color: #c62828; }
   .card-details ul { display: grid; gap: 5px; margin: 0; padding-left: 18px; }
   .card-details li.contact-note { color: #c62828; }
   .card-details li.contact-note a { color: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
