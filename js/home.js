@@ -59,7 +59,7 @@
   function fit() {
     phones.style.zoom = 1;
     if (matchMedia('(max-width: 760px)').matches) return;
-    phones.style.zoom = Math.min(1, pcell.clientWidth / 512);
+    phones.style.zoom = Math.min(1, pcell.clientWidth / 568);
   }
   let lastW = 0;
   new ResizeObserver(() => {
